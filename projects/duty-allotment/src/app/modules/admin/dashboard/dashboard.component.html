@@ -1,0 +1,204 @@
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+
+  <!-- Stat Cards Row -->
+  <div class="flex flex-wrap items-start gap-[20px]">
+
+    <!-- Total Faculty -->
+    <div class="w-[200px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-start justify-between">
+        <h3 class="text-[13px] font-semibold text-gray-700 leading-tight">Total Faculty</h3>
+        <div class="flex-shrink-0">
+          <!-- People/Group icon -->
+          <svg class="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M3 20c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="17" cy="8" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M21 20c0-2.761-1.791-5-4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">{{ totalFaculty | number:'2.0-0' }}</span>
+      </div>
+    </div>
+
+    <!-- Today's Duty -->
+    <div class="w-[200px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-start justify-between">
+        <h3 class="text-[13px] font-semibold text-gray-700 leading-tight">Today's duty</h3>
+        <div class="flex-shrink-0">
+          <!-- Calendar icon -->
+          <svg class="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M3 9H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M7 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M17 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="7" cy="13" r="1" fill="currentColor"/>
+            <circle cx="12" cy="13" r="1" fill="currentColor"/>
+            <circle cx="17" cy="13" r="1" fill="currentColor"/>
+            <circle cx="7" cy="17" r="1" fill="currentColor"/>
+            <circle cx="12" cy="17" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">{{ todayDuty | number:'2.0-0' }}</span>
+      </div>
+    </div>
+
+    <!-- Pending Duties -->
+    <div class="w-[200px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-start justify-between">
+        <h3 class="text-[13px] font-semibold text-gray-700 leading-tight">Pending Duties</h3>
+        <div class="flex-shrink-0">
+          <!-- Clock icon -->
+          <svg class="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">{{ pendingDuties | number:'2.0-0' }}</span>
+      </div>
+    </div>
+
+    <!-- Swap Request -->
+    <div class="w-[200px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      <div class="flex items-start justify-between">
+        <h3 class="text-[13px] font-semibold text-gray-700 leading-tight">Swap Request</h3>
+        <div class="flex-shrink-0">
+          <!-- Swap/Arrows icon -->
+          <svg class="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 8h16M16 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 16H4M8 12l-4 4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">{{ swapRequests | number:'2.0-0' }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Today's Assigned Duties Table -->
+  <div class="mt-[32px] bg-white border border-gray-200 rounded-[8px] shadow-sm overflow-hidden">
+
+    <!-- Table Header -->
+    <div class="px-[24px] py-[16px] border-b border-gray-100">
+      <h2 class="text-[14px] font-semibold text-gray-800">Today's Assigned Duties</h2>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-100 bg-gray-50/50">
+            <th class="px-[24px] py-[10px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Time</th>
+            <th class="px-[16px] py-[10px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Duty Type</th>
+            <th class="px-[16px] py-[10px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Event</th>
+            <th class="px-[16px] py-[10px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Faculty Name</th>
+            <th class="px-[16px] py-[10px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Venue</th>
+            <th class="px-[16px] py-[10px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let duty of pagedDuties"
+            class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/40 transition-colors duration-150">
+            <td class="px-[24px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.time }}</td>
+            <td class="px-[16px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.dutyType }}</td>
+            <td class="px-[16px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.event }}</td>
+            <td class="px-[16px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.facultyName }}</td>
+            <td class="px-[16px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.venue }}</td>
+            <td class="px-[16px] py-[12px] whitespace-nowrap">
+              <span
+                [ngClass]="{
+                  'text-[#f59e0b]': duty.status === 'Pending',
+                  'text-[#10b981]': duty.status === 'Assigned'
+                }"
+                class="text-[12px] font-semibold">
+                {{ duty.status }}
+              </span>
+            </td>
+          </tr>
+
+          <!-- Empty state -->
+          <tr *ngIf="pagedDuties.length === 0">
+            <td colspan="6" class="px-[24px] py-[32px] text-center text-[13px] text-gray-400">
+              No duties assigned for today.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="px-[24px] py-[12px] border-t border-gray-100 flex items-center justify-between flex-wrap gap-3">
+
+      <!-- Rows per page -->
+      <div class="flex items-center gap-[8px] text-[12px] text-gray-500">
+        <span>Rows per page</span>
+        <div class="relative">
+          <select
+            [(ngModel)]="rowsPerPage"
+            (ngModelChange)="onRowsPerPageChange()"
+            class="appearance-none border border-gray-200 rounded-[4px] px-[8px] pr-[20px] py-[3px] text-[12px] text-gray-700 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+            <option [value]="50">50</option>
+          </select>
+          <svg class="pointer-events-none absolute right-[4px] top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Page info + controls -->
+      <div class="flex items-center gap-[12px]">
+        <!-- Range info -->
+        <span class="text-[12px] text-gray-500">
+          {{ rangeStart }} – {{ rangeEnd }} of {{ totalItems }}
+        </span>
+
+        <!-- Prev button -->
+        <button
+          (click)="prevPage()"
+          [disabled]="currentPage === 1"
+          class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+
+        <!-- Page numbers -->
+        <div class="flex items-center gap-[4px]">
+          <button
+            *ngFor="let p of visiblePages"
+            (click)="goToPage(p)"
+            [ngClass]="{
+              'bg-blue-600 text-white border-blue-600': p === currentPage,
+              'bg-white text-gray-600 border-gray-200 hover:bg-gray-50': p !== currentPage
+            }"
+            class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border text-[12px] font-medium transition-colors">
+            {{ p }}
+          </button>
+        </div>
+
+        <!-- Next button -->
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</section>

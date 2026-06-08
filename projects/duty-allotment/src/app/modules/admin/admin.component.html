@@ -1,1 +1,23 @@
-<p>admin works!</p>
+<!-- Tab bar using lib-tabs -->
+<lib-tabs
+  [tabs]="tabs"
+  [activeTabId]="activeTabId"
+  (tabChange)="onTabSelected($event)">
+</lib-tabs>
+
+<!-- Each child component shown based on active tab -->
+<div *ngIf="activeTabId === 'dashboard'" class="mt-6">
+  <app-dashboard></app-dashboard>
+</div>
+
+<div *ngIf="activeTabId === 'faculty-management'" class="mt-6">
+  <app-faculty-management></app-faculty-management>
+</div>
+
+<div *ngIf="activeTabId === 'duty-management'" class="mt-6">
+  <app-duty-management></app-duty-management>
+</div>
+
+<div *ngIf="activeTabId === 'duty-records'" class="mt-6">
+  <app-duty-records></app-duty-records>
+</div>
