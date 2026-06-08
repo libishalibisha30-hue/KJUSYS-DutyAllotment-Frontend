@@ -22,9 +22,8 @@ export class SwapDutiesComponent {
   activeSubTab: 'request' | 'received' = 'request';
   
   // Request Swap Form state
-  selectedFaculty: string = '';
+  selectedFacultyItems: any[] = [];
   swapReason: string = '';
-  isDropdownOpen: boolean = false;
   
   myDuty = {
     type: 'Interview Duty',
@@ -34,12 +33,16 @@ export class SwapDutiesComponent {
     locationRoom: 'A302'
   };
 
-  facultyMembers: string[] = [
-    'Dr. Sarah Jacob',
-    'Dr. sevuga pandian',
-    'Dr. maria william',
-    'Prof. Alwyn'
+  facultyMembers: { id: number; name: string }[] = [
+    { id: 1, name: 'Dr. Sarah Jacob' },
+    { id: 2, name: 'Dr. Sevuga Pandian' },
+    { id: 3, name: 'Dr. Maria William' },
+    { id: 4, name: 'Prof. Alwyn' }
   ];
+
+  onFacultySelectionChange(items: any[]) {
+    this.selectedFacultyItems = items;
+  }
 
   // Received Swap state
   receivedSwaps: ReceivedSwap[] = [
@@ -56,28 +59,20 @@ export class SwapDutiesComponent {
     }
   ];
 
+
   selectSubTab(tab: 'request' | 'received') {
     this.activeSubTab = tab;
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
-  selectFaculty(member: string) {
-    this.selectedFaculty = member;
-    this.isDropdownOpen = false;
-  }
-
   onSubmitSwap() {
-    if (!this.selectedFaculty || !this.swapReason.trim()) {
+    if (!this.selectedFacultyItems.length || !this.swapReason.trim()) {
       alert('Please select a faculty member and provide a reason.');
       return;
     }
-    
+    const facultyName = this.selectedFacultyItems[0].name;
     // Simulate submission
-    alert(`Swap request with ${this.selectedFaculty} submitted successfully!`);
-    this.selectedFaculty = '';
+    alert(`Swap request with ${facultyName} submitted successfully!`);
+    this.selectedFacultyItems = [];
     this.swapReason = '';
   }
 

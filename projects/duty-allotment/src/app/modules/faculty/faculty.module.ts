@@ -8,6 +8,8 @@ import { AssignedDutiesComponent } from './assigned-duties/assigned-duties.compo
 import { SwapDutiesComponent } from './swap-duties/swap-duties.component';
 import { DutyHistoryComponent } from './duty-history/duty-history.component';
 import { TabsModule } from '@libs/tabs'; // ← import the tabs lib
+import { SubTabsModule } from '@libs/sub-tabs'; // ← import the sub-tabs lib
+import { DropdownLibModule } from '@libs/dropdown-lib'; // ← import the dropdown lib
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { TabsModule } from '@libs/tabs'; // ← import the tabs lib
     CommonModule,
     FormsModule,
     FacultyRoutingModule,
-    TabsModule  // ← add here
+    TabsModule,        // ← main tabs
+    SubTabsModule,     // ← sub-tabs
+    DropdownLibModule  // ← dropdown lib
   ]
 })
 export class FacultyModule {}

@@ -74,111 +74,66 @@
   </div>
 
   <!-- Calendar Card -->
-  <div
-    class="mt-[40px] w-[300px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[24px] py-[20px] hover:shadow-md transition-shadow duration-200">
+  <div class="mt-[40px] w-[300px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[24px] py-[20px] hover:shadow-md transition-shadow duration-200 relative">
 
     <!-- Month + Nav -->
     <div class="flex items-center justify-between mb-[20px]">
-      <h2 class="text-[15px] font-bold text-gray-800">October 2020</h2>
+      <h2 class="text-[15px] font-bold text-gray-800">{{ monthLabel }}</h2>
       <div class="flex items-center gap-[12px] text-gray-600">
-        <button class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1">‹</button>
-        <button class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1">›</button>
+        <button
+          (click)="prevMonth()"
+          class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">‹</button>
+        <button
+          (click)="nextMonth()"
+          class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">›</button>
       </div>
     </div>
 
     <!-- Day headers -->
     <div class="grid grid-cols-7 text-[12px] font-semibold text-gray-400 text-center mb-[12px]">
-      <span>Mo</span>
-      <span>Tu</span>
-      <span>We</span>
-      <span>Th</span>
-      <span>Fr</span>
-      <span>Sa</span>
-      <span>Su</span>
+      <span *ngFor="let h of dayHeaders">{{ h }}</span>
     </div>
 
     <!-- Date grid -->
-    <div class="grid grid-cols-7 gap-y-[8px] text-[13px] text-center text-gray-700">
-
-      <!-- Week 1 -->
-      <span class="w-9 h-9 flex items-center justify-center"></span>
-      <span class="w-9 h-9 flex items-center justify-center"></span>
-      <span class="w-9 h-9 flex items-center justify-center"></span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">1</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">2</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">3</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">4</span>
-
-      <!-- Week 2 -->
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">5</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">6</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">7</span>
-      <span class="w-9 h-9 flex items-center justify-center">
+    <div class="grid grid-cols-7 gap-y-[6px] text-[13px] text-center text-gray-700">
+      <ng-container *ngFor="let week of calendarWeeks">
         <span
-          class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold shadow-sm">8</span>
-      </span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">9</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">10</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">11</span>
+          *ngFor="let day of week"
+          class="flex flex-col items-center justify-center w-9 h-9"
+          [class.cursor-pointer]="!!day.day"
+          (click)="onDayClick(day)">
 
-      <!-- Week 3 -->
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">12</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">13</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">14</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">15</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">16</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">17</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">18</span>
+          <!-- Empty cell -->
+          <ng-container *ngIf="!day.day"></ng-container>
 
-      <!-- Week 4 -->
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">19</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">20</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">21</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">22</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">23</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">24</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">25</span>
+          <!-- Today (not selected) — outline ring only, NOT filled -->
+          <span
+            *ngIf="day.day && day.isToday && !day.isSelected"
+            class="w-8 h-8 flex flex-col items-center justify-center rounded-full ring-2 ring-blue-500 text-blue-600 font-bold cursor-pointer select-none hover:bg-blue-50 transition-colors duration-150">
+            <span>{{ day.day }}</span>
+            <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
+          </span>
 
-      <!-- Week 5 -->
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">26</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">27</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">28</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">29</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">30</span>
-      <span
-        class="w-9 h-9 flex items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors">31</span>
-      <span class="w-9 h-9 flex items-center justify-center"></span>
+          <!-- Selected (any day including today) — filled blue -->
+          <span
+            *ngIf="day.day && day.isSelected"
+            class="w-8 h-8 flex flex-col items-center justify-center bg-blue-600 text-white rounded-full font-semibold cursor-pointer select-none shadow-sm transition-colors duration-150">
+            <span>{{ day.day }}</span>
+            <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-300 mt-[1px]"></span>
+          </span>
 
+          <!-- Normal day -->
+          <span
+            *ngIf="day.day && !day.isToday && !day.isSelected"
+            class="w-8 h-8 flex flex-col items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors duration-150 select-none">
+            <span>{{ day.day }}</span>
+            <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
+          </span>
+
+        </span>
+      </ng-container>
     </div>
+
   </div>
 
 </section>

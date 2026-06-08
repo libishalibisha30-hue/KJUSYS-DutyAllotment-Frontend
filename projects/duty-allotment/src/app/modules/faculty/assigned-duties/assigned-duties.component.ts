@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SubTabItem } from '@libs/sub-tabs';
 
 interface Duty {
   id: string;
@@ -20,6 +21,11 @@ interface Duty {
 export class AssignedDutiesComponent {
   activeSubTab: 'today' | 'upcoming' = 'today';
   searchQuery: string = '';
+
+  subTabs: SubTabItem[] = [
+    { id: 'today',    label: "Today's Duties" },
+    { id: 'upcoming', label: 'Upcoming Duties' }
+  ];
 
   duties: Duty[] = [
     {
