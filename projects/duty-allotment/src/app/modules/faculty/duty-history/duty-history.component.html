@@ -1,0 +1,244 @@
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+
+  <!-- Main Table Card -->
+  <div class="bg-white border border-gray-200 rounded-[8px] p-[24px] shadow-sm flex flex-col hover:shadow-md transition-shadow duration-200">
+    
+    <!-- Top Action Row -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-[24px]">
+      
+      <!-- Search Input -->
+      <div class="relative w-full md:w-[280px]">
+        <span class="absolute inset-y-0 left-0 pl-[12px] flex items-center pointer-events-none">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.3-4.3" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <input 
+          type="text" 
+          (input)="onSearch($event)"
+          placeholder="Search Duties..." 
+          class="w-full pl-[36px] pr-[16px] py-[8px] bg-white border border-gray-300 rounded-[6px] text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-[12px] flex-wrap">
+        
+        <!-- Date Range -->
+        <button 
+          (click)="onOpenDateRange()"
+          class="px-[14px] py-[8px] bg-white border border-gray-300 rounded-[6px] hover:bg-gray-50 transition-colors text-[13px] font-semibold text-gray-600 flex items-center gap-[8px] focus:outline-none cursor-pointer shadow-sm">
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2" />
+            <path d="M3 9H21" stroke="currentColor" stroke-width="2" />
+            <path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          Date Range
+        </button>
+
+        <!-- Filters -->
+        <button 
+          (click)="onOpenFilters()"
+          class="px-[14px] py-[8px] bg-white border border-gray-300 rounded-[6px] hover:bg-gray-50 transition-colors text-[13px] font-semibold text-gray-600 flex items-center gap-[8px] focus:outline-none cursor-pointer shadow-sm">
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          Filters
+        </button>
+
+        <!-- Export -->
+        <button 
+          (click)="onExport()"
+          class="px-[14px] py-[8px] bg-blue-600 hover:bg-blue-700 text-white rounded-[6px] transition-colors text-[13px] font-semibold flex items-center gap-[8px] focus:outline-none cursor-pointer shadow-sm">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Table Container -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[750px]">
+        <thead>
+          <tr class="border-b border-gray-200 text-gray-400 font-bold text-[11px] uppercase tracking-wider bg-gray-50/50">
+            <th class="py-[12px] px-[16px]">Employ ID</th>
+            <th class="py-[12px] px-[16px]">Duty Name</th>
+            <th class="py-[12px] px-[16px]">Date</th>
+            <th class="py-[12px] px-[16px]">Event Name</th>
+            <th class="py-[12px] px-[16px]">Status</th>
+            <th class="py-[12px] px-[16px] inline-flex items-center gap-[4px] cursor-pointer hover:text-gray-600 transition-colors">
+              Assignee
+              <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+              </svg>
+            </th>
+            <th class="py-[12px] px-[16px] text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr *ngFor="let item of filteredHistory" class="hover:bg-gray-50/50 transition-colors">
+            
+            <!-- Employ ID -->
+            <td class="py-[16px] px-[16px] text-[13px] font-semibold text-gray-800">
+              {{ item.employId }}
+            </td>
+            
+            <!-- Duty Name -->
+            <td class="py-[16px] px-[16px] text-[13px] text-gray-700">
+              {{ item.dutyName }}
+            </td>
+            
+            <!-- Date -->
+            <td class="py-[16px] px-[16px] text-[13px] text-gray-500">
+              {{ item.date }}
+            </td>
+            
+            <!-- Event Name -->
+            <td class="py-[16px] px-[16px] text-[13px] font-bold text-gray-900">
+              {{ item.eventName }}
+            </td>
+            
+            <!-- Status -->
+            <td class="py-[16px] px-[16px] text-[13px]">
+              <span class="px-[12px] py-[4px] bg-green-50 text-green-700 text-[12px] font-semibold rounded-[20px] border border-green-200 shadow-sm">
+                {{ item.status }}
+              </span>
+            </td>
+            
+            <!-- Assignee -->
+            <td class="py-[16px] px-[16px] text-[13px] text-gray-700">
+              {{ item.assignee }}
+            </td>
+            
+            <!-- Actions -->
+            <td class="py-[16px] px-[16px] text-right">
+              <div class="flex items-center justify-end gap-[12px] text-gray-400">
+                
+                <!-- View Details -->
+                <button (click)="viewDetails(item.id)" class="hover:text-blue-600 transition-colors p-1 focus:outline-none" title="View Details">
+                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+                
+                <!-- Edit -->
+                <button (click)="editDuty(item.id)" class="hover:text-amber-600 transition-colors p-1 focus:outline-none" title="Edit Record">
+                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                
+                <!-- Delete -->
+                <button (click)="deleteDuty(item.id)" class="hover:text-red-600 transition-colors p-1 focus:outline-none" title="Delete Record">
+                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+
+                <!-- More Options -->
+                <button class="hover:text-gray-600 transition-colors p-1 focus:outline-none" title="More Options">
+                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                    <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+                  </svg>
+                </button>
+                
+              </div>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredHistory.length === 0" class="py-[40px] text-center text-gray-500">
+      No duty history records found.
+    </div>
+
+    <!-- Footer / Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-[24px] pt-[16px] border-t border-gray-150 gap-4">
+      
+      <!-- Rows per page selection -->
+      <div class="flex items-center gap-[8px] text-[13px] text-gray-500">
+        <span>Rows per page</span>
+        <select 
+          (change)="onRowsChange($event)"
+          [value]="rowsPerPage"
+          class="border border-gray-300 rounded-[6px] px-[8px] py-[4px] bg-white text-gray-700 outline-none text-[12px] cursor-pointer focus:border-blue-500">
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="25">25</option>
+          <option [value]="50">50</option>
+        </select>
+      </div>
+
+      <!-- Page navigation -->
+      <div class="flex items-center gap-[16px]">
+        
+        <!-- Total items display -->
+        <span class="text-[13px] text-gray-500">
+          1 - {{ rowsPerPage > filteredHistory.length ? filteredHistory.length : rowsPerPage }} of {{ totalRows }}
+        </span>
+
+        <!-- Page Buttons -->
+        <div class="flex items-center gap-[6px]">
+          
+          <!-- Previous Page Button -->
+          <button 
+            [disabled]="currentPage === 1"
+            (click)="onPageChange(currentPage - 1)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-gray-300 text-[15px] select-none focus:outline-none"
+            [ngClass]="currentPage === 1 ? 'cursor-not-allowed text-gray-300' : 'text-blue-600 hover:bg-gray-100 cursor-pointer'">
+            ‹
+          </button>
+          
+          <!-- Page 1 (Active) -->
+          <button 
+            (click)="onPageChange(1)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
+            [ngClass]="currentPage === 1 ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-blue-600 hover:bg-gray-100 font-medium'">
+            1
+          </button>
+          
+          <!-- Page 2 -->
+          <button 
+            (click)="onPageChange(2)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
+            [ngClass]="currentPage === 2 ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-blue-600 hover:bg-gray-100 font-medium'">
+            2
+          </button>
+
+          <!-- Page 3 -->
+          <button 
+            (click)="onPageChange(3)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
+            [ngClass]="currentPage === 3 ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-blue-600 hover:bg-gray-100 font-medium'">
+            3
+          </button>
+
+          <!-- Next Page Button -->
+          <button 
+            [disabled]="currentPage === 3"
+            (click)="onPageChange(currentPage + 1)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-blue-600 text-[15px] select-none focus:outline-none"
+            [ngClass]="currentPage === 3 ? 'cursor-not-allowed text-gray-300' : 'text-blue-600 hover:bg-gray-100 cursor-pointer'">
+            ›
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

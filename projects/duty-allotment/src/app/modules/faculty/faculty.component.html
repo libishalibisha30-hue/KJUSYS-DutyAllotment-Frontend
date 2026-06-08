@@ -1,0 +1,23 @@
+<!-- Tab bar using lib-tabs -->
+<lib-tabs
+  [tabs]="tabs"
+  [activeTabId]="activeTabId"
+  (tabChange)="onTabSelected($event)">
+</lib-tabs>
+
+<!-- Each child component shown based on active tab -->
+<div *ngIf="activeTabId === 'dashboard'">
+  <app-dashboard></app-dashboard>
+</div>
+
+<div *ngIf="activeTabId === 'assigned-duties'">
+  <app-assigned-duties></app-assigned-duties>
+</div>
+
+<div *ngIf="activeTabId === 'swap-duties'">
+  <app-swap-duties></app-swap-duties>
+</div>
+
+<div *ngIf="activeTabId === 'duty-history'">
+  <app-duty-history></app-duty-history>
+</div>

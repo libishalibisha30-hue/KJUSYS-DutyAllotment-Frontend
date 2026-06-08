@@ -1,1 +1,23 @@
-{}
+{
+  "duty-allotment": {
+    "remoteEntry": "http://localhost:4233/remoteEntry.js",
+    "displayName": "DutyAllotment",
+    "routePath": "duty-allotment",
+    "subModule": [
+      {
+        "exposedModule": "./FacultyModule",
+        "displayName": "Faculty",
+        "subPath": "duty-allotment/faculty",
+        "ngModuleName": "FacultyModule",
+        "pinned": false
+      },
+      {
+        "exposedModule": "./AdminModule",
+        "displayName": "Admin",
+        "subPath": "duty-allotment/admin",
+        "ngModuleName": "AdminModule",
+        "pinned": false
+      }
+    ]
+  }
+}

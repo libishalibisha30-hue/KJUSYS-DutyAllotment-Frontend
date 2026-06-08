@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app",
+    "types": []
+  },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts",
+    "src/app/modules/faculty/faculty.module.ts",
+    "src/app/modules/admin/admin.module.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

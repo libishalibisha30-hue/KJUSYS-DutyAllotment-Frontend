@@ -1,0 +1,197 @@
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+
+  <!-- Sub-tabs -->
+  <div class="flex items-center gap-[12px] border-b border-gray-200 mb-[28px]">
+    <div class="flex items-center gap-[12px] -mb-[1px]">
+      <button 
+        (click)="selectSubTab('request')"
+        class="px-[16px] pb-[12px] pt-[8px] text-[15px] font-semibold transition-all border-b-2 focus:outline-none rounded-t-[6px]"
+        [ngClass]="activeSubTab === 'request' ? 'text-blue-600 bg-blue-50 border-blue-600 font-bold' : 'text-gray-400 border-transparent hover:text-gray-600 hover:bg-gray-50'">
+        Request Swap
+      </button>
+      <button 
+        (click)="selectSubTab('received')"
+        class="px-[16px] pb-[12px] pt-[8px] text-[15px] font-semibold transition-all border-b-2 focus:outline-none rounded-t-[6px]"
+        [ngClass]="activeSubTab === 'received' ? 'text-blue-600 bg-blue-50 border-blue-600 font-bold' : 'text-gray-400 border-transparent hover:text-gray-600 hover:bg-gray-50'">
+        Received Swap
+      </button>
+    </div>
+  </div>
+
+  <!-- REQUEST SWAP CONTENT -->
+  <div *ngIf="activeSubTab === 'request'" class="flex flex-col">
+    
+    <!-- Duty Swap Selection Row -->
+    <div class="flex flex-col md:flex-row items-center gap-[20px] md:gap-[24px]">
+      
+      <!-- My Duty Card -->
+      <div class="w-full md:w-[320px] min-h-[170px] bg-white border border-gray-200 rounded-[8px] p-[20px] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+        <div>
+          <span class="text-[12px] font-bold text-gray-400 uppercase tracking-wider block mb-[12px]">My Duty</span>
+          
+          <div class="flex items-center gap-[12px] mb-[16px]">
+            <div class="w-[36px] h-[36px] bg-[#f9fafb] border border-gray-100 rounded-[6px] flex items-center justify-center text-gray-600">
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <span class="text-[15px] font-bold text-gray-900">{{ myDuty.type }}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Date/time -->
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wide">Date/time</span>
+            <span class="text-[13px] font-semibold text-gray-800 mt-[2px]">{{ myDuty.date }}</span>
+            <span class="text-[12px] text-gray-500 mt-[1px]">{{ myDuty.time }}</span>
+          </div>
+          <!-- Location -->
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wide">Location</span>
+            <span class="text-[13px] font-semibold text-gray-800 mt-[2px]">{{ myDuty.locationBuilding }}</span>
+            <span class="text-[12px] text-gray-500 mt-[1px]">{{ myDuty.locationRoom }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Swap Icon -->
+      <div class="flex items-center justify-center text-gray-400 px-2 mt-auto mb-auto">
+        <svg class="w-6 h-6 text-gray-700 transform rotate-90 md:rotate-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+      </div>
+
+      <!-- Swap With Card -->
+      <div class="w-full md:w-[320px] min-h-[170px] bg-white border border-gray-200 rounded-[8px] p-[20px] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow duration-200 relative">
+        <div>
+          <span class="text-[12px] font-bold text-gray-400 uppercase tracking-wider block mb-[12px]">Swap With</span>
+          
+          <div class="flex flex-col relative">
+            <span class="text-[12px] font-semibold text-gray-500 mb-[6px]">Select Faculty</span>
+            
+            <!-- Dropdown Button -->
+            <div 
+              (click)="toggleDropdown()"
+              class="relative w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 flex items-center justify-between cursor-pointer bg-white hover:border-gray-400 transition-colors">
+              <span>{{ selectedFaculty || 'Choose Faculty Member' }}</span>
+              <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" [ngClass]="{'rotate-180': isDropdownOpen}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div 
+              *ngIf="isDropdownOpen"
+              class="absolute top-[100%] left-0 right-0 mt-[4px] bg-white border border-gray-200 rounded-[6px] shadow-lg z-50 max-h-[150px] overflow-y-auto">
+              <div 
+                *ngFor="let member of facultyMembers"
+                (click)="selectFaculty(member)"
+                class="px-[12px] py-[8px] text-[13px] text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors">
+                {{ member }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Bottom spacing padding to align heights -->
+        <div class="h-[20px]"></div>
+      </div>
+
+    </div>
+
+    <!-- Reason for Swap Card -->
+    <div class="w-full max-w-[708px] bg-white border border-gray-200 rounded-[8px] p-[20px] shadow-sm flex flex-col mt-[28px] hover:shadow-md transition-shadow duration-200">
+      <span class="text-[12px] font-bold text-gray-400 uppercase tracking-wider block mb-[12px]">Reason for Swap Request</span>
+      
+      <textarea 
+        [(ngModel)]="swapReason"
+        placeholder="Enter the Reason for Requesting Swap..." 
+        class="w-full border border-gray-300 rounded-[6px] p-[12px] text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[100px] resize-none transition-all"></textarea>
+      
+      <div class="flex justify-end mt-[16px]">
+        <button 
+          (click)="onSubmitSwap()"
+          class="px-[24px] py-[8px] bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-[20px] text-[13px] shadow-sm transition-colors focus:outline-none">
+          Submit
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECEIVED SWAP CONTENT -->
+  <div *ngIf="activeSubTab === 'received'" class="flex flex-col gap-[16px]">
+    
+    <div 
+      *ngFor="let swap of receivedSwaps" 
+      class="bg-white border border-gray-200 rounded-[8px] shadow-sm p-[24px] max-w-[708px] flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition-shadow duration-200">
+      
+      <!-- Requester and Info -->
+      <div class="flex items-start gap-[16px]">
+        
+        <!-- Profile Avatar (Image or Initials Fallback) -->
+        <div class="w-[44px] h-[44px] rounded-full overflow-hidden border border-gray-100 flex-shrink-0 bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-[14px]">
+          <img 
+            *ngIf="swap.avatar && !swap.imageError" 
+            [src]="swap.avatar" 
+            (error)="swap.imageError = true"
+            class="w-full h-full object-cover" 
+            alt="Profile Picture" />
+          <span *ngIf="!swap.avatar || swap.imageError">MW</span>
+        </div>
+        
+        <!-- Info stack -->
+        <div class="flex flex-col">
+          <span class="text-[15px] font-bold text-gray-900">{{ swap.sender }}</span>
+          
+          <div class="flex flex-col mt-[6px] gap-[2px]">
+            <span class="text-[13px] text-gray-800 font-medium">{{ swap.dutyType }} - {{ swap.date }}</span>
+            <span class="text-[13px] text-gray-500">{{ swap.time }}</span>
+            <span class="text-[13px] text-gray-500">{{ swap.location }}</span>
+            <span class="text-[13px] text-gray-700 font-medium mt-[4px]">REASON : {{ swap.reason }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-[12px] flex-shrink-0">
+        
+        <ng-container *ngIf="swap.status === 'pending'">
+          <button 
+            (click)="acceptSwap(swap.id)"
+            class="px-[20px] py-[6px] bg-[#16a34a] hover:bg-[#15803d] text-white text-[13px] font-semibold rounded-[6px] shadow-sm transition-colors focus:outline-none">
+            Accept
+          </button>
+          <button 
+            (click)="rejectSwap(swap.id)"
+            class="px-[20px] py-[6px] bg-[#dc2626] hover:bg-[#b91c1c] text-white text-[13px] font-semibold rounded-[6px] shadow-sm transition-colors focus:outline-none">
+            Reject
+          </button>
+        </ng-container>
+
+        <span 
+          *ngIf="swap.status === 'accepted'" 
+          class="px-[16px] py-[6px] bg-green-50 text-green-700 text-[13px] font-semibold rounded-[20px] border border-green-200">
+          Accepted
+        </span>
+
+        <span 
+          *ngIf="swap.status === 'rejected'" 
+          class="px-[16px] py-[6px] bg-red-50 text-red-700 text-[13px] font-semibold rounded-[20px] border border-red-200">
+          Rejected
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="receivedSwaps.length === 0" class="bg-white border border-gray-200 rounded-[8px] shadow-sm py-[40px] text-center text-gray-500 max-w-[708px]">
+      No received swap requests.
+    </div>
+
+  </div>
+
+</section>

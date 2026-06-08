@@ -2,16 +2,13 @@
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
-    "./projects/shell/src/**/*.{html,ts}",
     "./projects/duty-allotment/src/**/*.{html,ts}",
     "../libs/**/*.{html,ts}",
-    "./projects/libs/**/*.{html,ts}",
-    "../../node_modules/flowbite/**/*.js",
-    "./node_modules/flowbite/**/*.js",
+    "../../node_modules/flowbite/**/*.js"
   ],
   theme: {
-    screens: {
-        'sm':'640px',
+    screens:{
+      'sm':'640px',
       'md':'768px',
       'lg':'1024px',
       'xl':'1280px',
@@ -23,10 +20,9 @@ module.exports = {
       },
     },
   },
-  plugins: [require("flowbite/plugin"),
-
-    require('flowbite-typography'),
-
-    
+  plugins: [
+    require('flowbite/plugin')({
+      charts: true,
+    }),
   ],
-};
+}
