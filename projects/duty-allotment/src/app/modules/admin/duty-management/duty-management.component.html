@@ -1,1 +1,379 @@
-<p>duty-management works!</p>
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+
+  <!-- Sub-tabs using lib-sub-tabs -->
+  <lib-sub-tabs
+    [tabs]="subTabs"
+    [activeTabId]="activeSubTabId"
+    (tabChange)="onSubTabSelected($event)">
+  </lib-sub-tabs>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- CREATE NEW DUTY TAB                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div *ngIf="activeSubTabId === 'create-new-duty'" class="mt-[20px] flex gap-[20px] items-start">
+
+    <!-- Left: Form Card -->
+    <div class="w-[300px] flex-shrink-0 bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[20px]">
+
+      <!-- Card header -->
+      <div class="flex items-center justify-between mb-[18px]">
+        <h3 class="text-[13px] font-semibold text-gray-800">Create New Duty</h3>
+        <button class="flex items-center gap-[5px] border border-blue-500 text-blue-600 text-[11px] font-semibold px-[10px] py-[5px] rounded-[5px] hover:bg-blue-50 transition-colors">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4-4 4M12 8v8"/>
+          </svg>
+          Upload
+        </button>
+      </div>
+
+      <!-- Form fields -->
+      <div class="flex flex-col gap-[12px]">
+
+        <!-- Duty Type Dropdown -->
+        <div>
+          <lib-dropdown-lib
+            label="Duty Type"
+            placeholder="Select a Duty Type"
+            [singleSelection]="true"
+            [data]="dutyTypeOptions"
+            idField="id"
+            textField="name"
+            triggerHeight="34px"
+            [selectedItems]="selectedDutyType"
+            (selectionChange)="onDutyTypeChange($event)">
+          </lib-dropdown-lib>
+        </div>
+
+        <!-- Event Name -->
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-600 mb-[5px]">Event Name</label>
+          <input
+            type="text"
+            [(ngModel)]="form.eventName"
+            placeholder="e.g. End Semester Examination"
+            class="w-full px-[10px] py-[7px] border border-gray-200 rounded-[5px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"/>
+        </div>
+
+        <!-- Date -->
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-600 mb-[5px]">Date</label>
+          <input
+            type="date"
+            [(ngModel)]="form.date"
+            placeholder="DD/MM/YYYY"
+            class="w-full px-[10px] py-[7px] border border-gray-200 rounded-[5px] text-[12px] text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-400 transition"/>
+        </div>
+
+        <!-- Time -->
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-600 mb-[5px]">Time</label>
+          <input
+            type="text"
+            [(ngModel)]="form.time"
+            placeholder="e.g. 9:00 AM - 11:00 AM"
+            class="w-full px-[10px] py-[7px] border border-gray-200 rounded-[5px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"/>
+        </div>
+
+        <!-- Venue Dropdown -->
+        <div>
+          <lib-dropdown-lib
+            label="Venue"
+            placeholder="Select a Venue"
+            [singleSelection]="true"
+            [data]="venueOptions"
+            idField="id"
+            textField="name"
+            triggerHeight="34px"
+            [selectedItems]="selectedVenue"
+            (selectionChange)="onVenueChange($event)">
+          </lib-dropdown-lib>
+        </div>
+
+        <!-- Department Dropdown -->
+        <div>
+          <lib-dropdown-lib
+            label="Department"
+            placeholder="Select a Department"
+            [singleSelection]="true"
+            [data]="departmentOptions"
+            idField="id"
+            textField="name"
+            triggerHeight="34px"
+            [selectedItems]="selectedDepartment"
+            (selectionChange)="onDepartmentChange($event)">
+          </lib-dropdown-lib>
+        </div>
+
+        <!-- No of Faculty Required -->
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-600 mb-[5px]">No of Faculty Required</label>
+          <input
+            type="number"
+            [(ngModel)]="form.noOfFaculty"
+            placeholder="e.g. 2"
+            min="1"
+            class="w-full px-[10px] py-[7px] border border-gray-200 rounded-[5px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"/>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-600 mb-[5px]">Description</label>
+          <textarea
+            [(ngModel)]="form.description"
+            placeholder="Brief description of the role and responsibilities..."
+            rows="4"
+            class="w-full px-[10px] py-[7px] border border-gray-200 rounded-[5px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition resize-none">
+          </textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end gap-[8px] mt-[4px]">
+          <button
+            (click)="onClear()"
+            class="px-[16px] py-[7px] text-[12px] font-medium text-gray-600 border border-gray-200 rounded-[5px] bg-white hover:bg-gray-50 transition-colors">
+            Clear
+          </button>
+          <button
+            (click)="onCreate()"
+            class="px-[18px] py-[7px] text-[12px] font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-[5px] transition-colors shadow-sm">
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Duty Table -->
+    <div class="flex-1 min-w-0 flex flex-col gap-[16px]">
+      <div class="bg-white border border-gray-200 rounded-[8px] shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-gray-100 bg-gray-50/50">
+                <th class="pl-[16px] pr-[8px] py-[11px] w-[36px]">
+                  <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll($event)"
+                    class="w-[13px] h-[13px] rounded border-gray-300 accent-blue-600 cursor-pointer"/>
+                </th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Duty Type</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Event Name</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Date</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Time</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Venue</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Department</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">No of Faculty Required</th>
+                <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let duty of pagedDuties"
+                class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/40 transition-colors duration-100">
+                <td class="pl-[16px] pr-[8px] py-[11px]">
+                  <input type="checkbox" [(ngModel)]="duty.selected"
+                    class="w-[13px] h-[13px] rounded border-gray-300 accent-blue-600 cursor-pointer"/>
+                </td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.dutyType }}</td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.eventName }}</td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.date }}</td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.time }}</td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.venue }}</td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.department }}</td>
+                <td class="px-[12px] py-[11px] text-[12px] text-gray-700 whitespace-nowrap text-center">{{ duty.noOfFacultyRequired | number:'2.0-0' }}</td>
+                <td class="px-[12px] py-[11px] whitespace-nowrap">
+                  <span [ngClass]="{
+                    'text-[#10b981]': duty.status === 'Assigned',
+                    'text-[#f59e0b]': duty.status === 'Pending',
+                    'text-[#ef4444]': duty.status === 'Cancelled'
+                  }" class="text-[12px] font-semibold">{{ duty.status }}</span>
+                </td>
+              </tr>
+              <tr *ngIf="pagedDuties.length === 0">
+                <td colspan="9" class="px-[24px] py-[40px] text-center text-[13px] text-gray-400">
+                  No duties found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="px-[16px] py-[10px] border-t border-gray-100 flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-[8px] text-[12px] text-gray-500">
+            <span>Rows per page</span>
+            <div class="relative">
+              <select [(ngModel)]="rowsPerPage" (ngModelChange)="onRowsPerPageChange()"
+                class="appearance-none border border-gray-200 rounded-[4px] px-[8px] pr-[20px] py-[3px] text-[12px] text-gray-700 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400">
+                <option [value]="5">5</option>
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+              </select>
+              <svg class="pointer-events-none absolute right-[4px] top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+          </div>
+          <div class="flex items-center gap-[12px]">
+            <span class="text-[12px] text-gray-500">{{ rangeStart }} - {{ rangeEnd }} of {{ totalItems }}</span>
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+              class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+              <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+            <div class="flex items-center gap-[4px]">
+              <button *ngFor="let p of visiblePages" (click)="goToPage(p)"
+                [ngClass]="{
+                  'bg-blue-600 text-white border-blue-600': p === currentPage,
+                  'bg-white text-gray-600 border-gray-200 hover:bg-gray-50': p !== currentPage
+                }"
+                class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border text-[12px] font-medium transition-colors">
+                {{ p }}
+              </button>
+            </div>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+              class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+              <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assign Duty button (bottom-right) -->
+      <div class="flex justify-end">
+        <button (click)="onAssignDuty()"
+          class="px-[20px] py-[9px] text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-[6px] transition-colors shadow-sm">
+          Assign Duty
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- ASSIGN DUTY TAB                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div *ngIf="activeSubTabId === 'assign-duty'" class="mt-[20px]">
+    <div class="bg-white border border-gray-200 rounded-[8px] shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-gray-100 bg-gray-50/50">
+              <th class="pl-[20px] pr-[8px] py-[11px] w-[40px]">
+                <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll($event)"
+                  class="w-[14px] h-[14px] rounded border-gray-300 accent-blue-600 cursor-pointer"/>
+              </th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Duty Type</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Event Name</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Date</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Time</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Venue</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Department</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">No of Faculty Required</th>
+              <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let duty of pagedDuties"
+              class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/40 transition-colors duration-100">
+              <td class="pl-[20px] pr-[8px] py-[12px]">
+                <input type="checkbox" [(ngModel)]="duty.selected"
+                  class="w-[14px] h-[14px] rounded border-gray-300 accent-blue-600 cursor-pointer"/>
+              </td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.dutyType }}</td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.eventName }}</td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.date }}</td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.time }}</td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.venue }}</td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ duty.department }}</td>
+              <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap text-center">{{ duty.noOfFacultyRequired | number:'2.0-0' }}</td>
+              <td class="px-[12px] py-[12px] whitespace-nowrap">
+                <span [ngClass]="{
+                  'text-[#10b981]': duty.status === 'Assigned',
+                  'text-[#f59e0b]': duty.status === 'Pending',
+                  'text-[#ef4444]': duty.status === 'Cancelled'
+                }" class="text-[12px] font-semibold">{{ duty.status }}</span>
+              </td>
+            </tr>
+            <tr *ngIf="pagedDuties.length === 0">
+              <td colspan="9" class="px-[24px] py-[40px] text-center text-[13px] text-gray-400">
+                No duties found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="px-[20px] py-[12px] border-t border-gray-100 flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-[8px] text-[12px] text-gray-500">
+          <span>Rows per page</span>
+          <div class="relative">
+            <select [(ngModel)]="rowsPerPage" (ngModelChange)="onRowsPerPageChange()"
+              class="appearance-none border border-gray-200 rounded-[4px] px-[8px] pr-[20px] py-[3px] text-[12px] text-gray-700 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400">
+              <option [value]="5">5</option>
+              <option [value]="10">10</option>
+              <option [value]="20">20</option>
+              <option [value]="50">50</option>
+            </select>
+            <svg class="pointer-events-none absolute right-[4px] top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-[12px]">
+          <span class="text-[12px] text-gray-500">{{ rangeStart }} - {{ rangeEnd }} of {{ totalItems }}</span>
+          <button (click)="prevPage()" [disabled]="currentPage === 1"
+            class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+            <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+          <div class="flex items-center gap-[4px]">
+            <button *ngFor="let p of visiblePages" (click)="goToPage(p)"
+              [ngClass]="{
+                'bg-blue-600 text-white border-blue-600': p === currentPage,
+                'bg-white text-gray-600 border-gray-200 hover:bg-gray-50': p !== currentPage
+              }"
+              class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border text-[12px] font-medium transition-colors">
+              {{ p }}
+            </button>
+          </div>
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+            <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assign Duty button -->
+    <div class="flex justify-end mt-[16px]">
+      <button (click)="onAssignDuty()"
+        class="px-[20px] py-[9px] text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-[6px] transition-colors shadow-sm">
+        Assign Duty
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SWAP REQUESTS TAB                                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div *ngIf="activeSubTabId === 'swap-requests'" class="mt-[20px]">
+    <div class="bg-white border border-gray-200 rounded-[8px] shadow-sm">
+      <!-- Empty state -->
+      <div class="flex flex-col items-center justify-center py-[64px] gap-[12px]">
+        <svg class="w-[48px] h-[48px] text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M16 4l4 4-4 4"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 16H4M8 12l-4 4 4 4"/>
+        </svg>
+        <p class="text-[14px] font-semibold text-gray-400">No Swap Requests</p>
+        <p class="text-[12px] text-gray-400">Faculty swap requests will appear here.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
