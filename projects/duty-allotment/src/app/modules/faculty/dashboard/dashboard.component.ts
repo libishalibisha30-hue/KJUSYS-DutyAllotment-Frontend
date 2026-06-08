@@ -27,6 +27,64 @@ export class DashboardComponent implements OnInit {
   // Day-name headers (Monday first)
   readonly dayHeaders = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
+  // Duties list as shown in the screenshot
+  duties = [
+    {
+      date: '08 June',
+      eventName: 'Exam Duty',
+      eventSub: 'End sem exam',
+      time: '9:00 AM',
+      location: 'A 302',
+      assignee: 'Alice Green',
+      status: 'Assigned'
+    },
+    {
+      date: '18 June',
+      eventName: 'Exam Duty',
+      eventSub: 'Bench Allotment',
+      time: '9:00 AM',
+      location: 'M 403',
+      assignee: 'Alice Green',
+      status: 'Pending'
+    },
+    {
+      date: '23 June',
+      eventName: 'Exam Duty',
+      eventSub: 'Squad',
+      time: '9:00 AM',
+      location: 'H 505',
+      assignee: 'Alice Green',
+      status: 'Assigned'
+    },
+    {
+      date: '24 June',
+      eventName: 'Exam Duty',
+      eventSub: 'Invigilator',
+      time: '9:00 AM',
+      location: 'A 202',
+      assignee: 'David Kumar',
+      status: 'Pending'
+    },
+    {
+      date: '30 June',
+      eventName: 'Exam Duty',
+      eventSub: 'Squad',
+      time: '9:00 AM',
+      location: 'M 302',
+      assignee: 'David Kumar',
+      status: 'Assigned'
+    },
+    {
+      date: '2 July',
+      eventName: 'Exam Duty',
+      eventSub: 'invigilator',
+      time: '9:00 AM',
+      location: 'A 101',
+      assignee: 'David Kumar',
+      status: 'Assigned'
+    }
+  ];
+
   ngOnInit(): void {
     this.buildCalendar();
   }
@@ -75,7 +133,12 @@ export class DashboardComponent implements OnInit {
     for (let d = 1; d <= lastDay.getDate(); d++) {
       const date    = new Date(year, month, d);
       const isToday = this.isSameDay(date, this.today);
-      days.push({ day: d, date, isToday, isSelected: false, hasDuty: false });
+      const isSelected = isToday;
+      const dayObj = { day: d, date, isToday, isSelected, hasDuty: false };
+      days.push(dayObj);
+      if (isSelected) {
+        this.selectedDay = dayObj;
+      }
     }
 
     // trailing empty cells to complete the last week

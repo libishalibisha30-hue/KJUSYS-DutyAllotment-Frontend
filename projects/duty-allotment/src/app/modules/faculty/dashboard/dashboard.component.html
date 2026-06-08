@@ -5,7 +5,7 @@
 
     <!-- Assigned Duties -->
     <div
-      class="w-[300px] h-[160px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      class="w-[300px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
       <div class="flex items-start justify-between">
         <h3 class="text-[15px] font-semibold text-gray-800 leading-tight">
           Assigned Duties
@@ -25,14 +25,14 @@
           </svg>
         </div>
       </div>
-      <div class="flex-grow flex items-center justify-center">
-        <span class="text-[42px] font-bold text-gray-900 leading-none">00</span>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">00</span>
       </div>
     </div>
 
     <!-- Upcoming Duties -->
     <div
-      class="w-[300px] h-[160px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      class="w-[300px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
       <div class="flex items-start justify-between">
         <h3 class="text-[15px] font-semibold text-gray-800 leading-tight">
           Upcoming Duties
@@ -45,14 +45,14 @@
           </svg>
         </div>
       </div>
-      <div class="flex-grow flex items-center justify-center">
-        <span class="text-[42px] font-bold text-gray-900 leading-none">00</span>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">00</span>
       </div>
     </div>
 
     <!-- Swap Request -->
     <div
-      class="w-[300px] h-[160px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+      class="w-[300px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
       <div class="flex items-start justify-between">
         <h3 class="text-[15px] font-semibold text-gray-800 leading-tight">
           Swap Request
@@ -66,72 +66,140 @@
           </svg>
         </div>
       </div>
-      <div class="flex-grow flex items-center justify-center">
-        <span class="text-[42px] font-bold text-gray-900 leading-none">00</span>
+      <div class="flex items-end justify-start">
+        <span class="text-[36px] font-bold text-gray-900 leading-none">00</span>
       </div>
     </div>
 
   </div>
 
-  <!-- Calendar Card -->
-  <div class="mt-[40px] w-[300px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[24px] py-[20px] hover:shadow-md transition-shadow duration-200 relative">
+  <!-- Main Content Row: Calendar and Duties side by side -->
+  <div class="mt-[40px] flex flex-wrap xl:flex-nowrap items-start gap-[24px] w-full">
 
-    <!-- Month + Nav -->
-    <div class="flex items-center justify-between mb-[20px]">
-      <h2 class="text-[15px] font-bold text-gray-800">{{ monthLabel }}</h2>
-      <div class="flex items-center gap-[12px] text-gray-600">
-        <button
-          (click)="prevMonth()"
-          class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">‹</button>
-        <button
-          (click)="nextMonth()"
-          class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">›</button>
+    <!-- Calendar Card -->
+    <div class="w-[300px] flex-shrink-0 bg-white border border-gray-200 rounded-[8px] shadow-sm p-[24px] hover:shadow-md transition-shadow duration-200 relative">
+
+      <!-- Month + Nav -->
+      <div class="flex items-center justify-between mb-[24px]">
+        <h2 class="text-[17px] font-bold text-gray-800 tracking-tight">{{ monthLabel }}</h2>
+        <div class="flex items-center gap-[12px] text-gray-600">
+          <button
+            (click)="prevMonth()"
+            class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">‹</button>
+          <button
+            (click)="nextMonth()"
+            class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">›</button>
+        </div>
       </div>
+
+      <!-- Day headers -->
+      <div class="grid grid-cols-7 text-[12px] font-bold text-gray-400 text-center mb-[16px]">
+        <span *ngFor="let h of dayHeaders">{{ h }}</span>
+      </div>
+
+      <!-- Date grid -->
+      <div class="grid grid-cols-7 gap-y-[8px] text-[13px] text-center text-gray-700">
+        <ng-container *ngFor="let week of calendarWeeks">
+          <span
+            *ngFor="let day of week"
+            class="flex flex-col items-center justify-center w-9 h-9"
+            [class.cursor-pointer]="!!day.day"
+            (click)="onDayClick(day)">
+
+            <!-- Empty cell -->
+            <ng-container *ngIf="!day.day"></ng-container>
+
+            <!-- Today (not selected) — outline ring only, NOT filled -->
+            <span
+              *ngIf="day.day && day.isToday && !day.isSelected"
+              class="w-8 h-8 flex flex-col items-center justify-center rounded-full ring-2 ring-blue-500 text-blue-600 font-bold cursor-pointer select-none hover:bg-blue-50 transition-colors duration-150">
+              <span>{{ day.day }}</span>
+              <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
+            </span>
+
+            <!-- Selected (any day including today) — filled blue -->
+            <span
+              *ngIf="day.day && day.isSelected"
+              class="w-8 h-8 flex flex-col items-center justify-center bg-blue-600 text-white rounded-full font-bold cursor-pointer select-none shadow-sm transition-colors duration-150">
+              <span>{{ day.day }}</span>
+              <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-300 mt-[1px]"></span>
+            </span>
+
+            <!-- Normal day -->
+            <span
+              *ngIf="day.day && !day.isToday && !day.isSelected"
+              class="w-8 h-8 flex flex-col items-center justify-center font-semibold text-gray-800 rounded-full hover:bg-gray-100 cursor-pointer transition-colors duration-150 select-none">
+              <span>{{ day.day }}</span>
+              <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
+            </span>
+
+          </span>
+        </ng-container>
+      </div>
+
     </div>
 
-    <!-- Day headers -->
-    <div class="grid grid-cols-7 text-[12px] font-semibold text-gray-400 text-center mb-[12px]">
-      <span *ngFor="let h of dayHeaders">{{ h }}</span>
-    </div>
+    <!-- Duties Table Card -->
+    <div class="flex-grow min-w-[320px] bg-white border border-gray-200 rounded-[8px] shadow-sm p-[24px] hover:shadow-md transition-shadow duration-200 overflow-x-auto">
+      
+      <!-- Card Header -->
+      <div class="mb-[24px]">
+        <h2 class="text-[20px] font-bold text-gray-800 tracking-tight">Duties</h2>
+        <p class="text-[12px] text-gray-400 mt-[2px]">Duties on your schedule</p>
+      </div>
 
-    <!-- Date grid -->
-    <div class="grid grid-cols-7 gap-y-[6px] text-[13px] text-center text-gray-700">
-      <ng-container *ngFor="let week of calendarWeeks">
-        <span
-          *ngFor="let day of week"
-          class="flex flex-col items-center justify-center w-9 h-9"
-          [class.cursor-pointer]="!!day.day"
-          (click)="onDayClick(day)">
+      <!-- Table -->
+      <table class="w-full min-w-[580px] text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-100">
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Date</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Event Name</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Time</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Location</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              <span class="inline-flex items-center gap-1">
+                Assignee
+                <svg class="w-2.5 h-2.5 text-blue-500" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                </svg>
+              </span>
+            </th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let duty of duties" class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/30 transition-colors">
+            <!-- Date -->
+            <td class="py-4 text-[13px] font-bold text-gray-800 whitespace-nowrap">{{ duty.date }}</td>
+            
+            <!-- Event Name -->
+            <td class="py-4">
+              <div class="text-[13px] font-bold text-gray-850">{{ duty.eventName }}</div>
+              <div class="text-[11px] text-gray-400 font-medium mt-[1px]">{{ duty.eventSub }}</div>
+            </td>
+            
+            <!-- Time -->
+            <td class="py-4 text-[13px] text-gray-500 font-medium whitespace-nowrap">{{ duty.time }}</td>
+            
+            <!-- Location -->
+            <td class="py-4 text-[13px] text-gray-600 font-semibold whitespace-nowrap">{{ duty.location }}</td>
+            
+            <!-- Assignee -->
+            <td class="py-4 text-[13px] text-gray-600 font-medium whitespace-nowrap">{{ duty.assignee }}</td>
+            
+            <!-- Status -->
+            <td class="py-4 whitespace-nowrap">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-600 border border-emerald-100/70': duty.status === 'Assigned',
+                'bg-amber-50 text-amber-600 border border-amber-100/70': duty.status === 'Pending'
+              }" class="px-[8px] py-[3px] rounded-[4px] text-[11px] font-bold">
+                {{ duty.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-          <!-- Empty cell -->
-          <ng-container *ngIf="!day.day"></ng-container>
-
-          <!-- Today (not selected) — outline ring only, NOT filled -->
-          <span
-            *ngIf="day.day && day.isToday && !day.isSelected"
-            class="w-8 h-8 flex flex-col items-center justify-center rounded-full ring-2 ring-blue-500 text-blue-600 font-bold cursor-pointer select-none hover:bg-blue-50 transition-colors duration-150">
-            <span>{{ day.day }}</span>
-            <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
-          </span>
-
-          <!-- Selected (any day including today) — filled blue -->
-          <span
-            *ngIf="day.day && day.isSelected"
-            class="w-8 h-8 flex flex-col items-center justify-center bg-blue-600 text-white rounded-full font-semibold cursor-pointer select-none shadow-sm transition-colors duration-150">
-            <span>{{ day.day }}</span>
-            <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-300 mt-[1px]"></span>
-          </span>
-
-          <!-- Normal day -->
-          <span
-            *ngIf="day.day && !day.isToday && !day.isSelected"
-            class="w-8 h-8 flex flex-col items-center justify-center font-medium rounded-full hover:bg-gray-100 cursor-pointer transition-colors duration-150 select-none">
-            <span>{{ day.day }}</span>
-            <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
-          </span>
-
-        </span>
-      </ng-container>
     </div>
 
   </div>
