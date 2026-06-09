@@ -36,6 +36,8 @@ export interface SwapRequest {
   requestedOn: string;
   // Swap target
   swapWith: string;
+  swapAvatar?: string;
+  swapImageError?: boolean;
   swapDutyType: string;
   swapDate: string;
   swapTime: string;
@@ -300,7 +302,7 @@ export class DutyManagementComponent implements OnInit {
   goToFacultyPage(p: number): void { this.facultyCurrentPage = p; }
   onFacultyRowsPerPageChange(): void { this.facultyCurrentPage = 1; }
 
-  // ── Swap Requests ─────────────────────────────────────────────────────────────
+  // Swap Requests
   // Avatar image path: assets/images/Avatar.jpg
   swapRequests: SwapRequest[] = [
     {
@@ -310,11 +312,13 @@ export class DutyManagementComponent implements OnInit {
       imageError:   false,
       dutyType:     'Exam Duty',
       date:         '22 May 2026',
-      time:         '9:00 AM - 12:00 PM',
+      time:         '9:00 AM -12:00 PM',
       venue:        'Block A 101',
-      reason:       'I have a department meeting scheduled.',
+      reason:       'I have a meeting',
       requestedOn:  '18 May 2026',
-      swapWith:     'John Smith',
+      swapWith:     'John',
+      swapAvatar:   'assets/images/Avatar.jpg',
+      swapImageError: false,
       swapDutyType: 'Invigilation',
       swapDate:     '24 May 2026',
       swapTime:     '10:00 AM - 1:00 PM',
@@ -326,17 +330,19 @@ export class DutyManagementComponent implements OnInit {
       facultyName:  'Bonnie Green',
       avatar:       'assets/images/Avatar.jpg',
       imageError:   false,
-      dutyType:     'Hall Duty',
-      date:         '25 May 2026',
-      time:         '2:00 PM - 5:00 PM',
-      venue:        'Block C 301',
-      reason:       'Personal health appointment.',
-      requestedOn:  '20 May 2026',
-      swapWith:     'Dr. Alice',
-      swapDutyType: 'Practical Duty',
-      swapDate:     '26 May 2026',
-      swapTime:     '9:00 AM - 12:00 PM',
-      swapVenue:    'Lab A - 01',
+      dutyType:     'Exam Duty',
+      date:         '22 May 2026',
+      time:         '9:00 AM -12:00 PM',
+      venue:        'Block A 101',
+      reason:       'I have a meeting',
+      requestedOn:  '18 May 2026',
+      swapWith:     'John',
+      swapAvatar:   'assets/images/Avatar.jpg',
+      swapImageError: false,
+      swapDutyType: 'Invigilation',
+      swapDate:     '24 May 2026',
+      swapTime:     '10:00 AM - 1:00 PM',
+      swapVenue:    'Block B 201',
       status:       'Pending'
     }
   ];
