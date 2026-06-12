@@ -2,125 +2,167 @@
 
   <!-- Sub-tabs and Search Bar -->
   <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-gray-200 mb-[28px] gap-4">
-    
-    <!-- Sub-tabs -->
-    <div class="flex items-center gap-[12px] -mb-[1px]">
-      <button 
-        (click)="selectSubTab('today')"
-        class="px-[16px] pb-[12px] pt-[8px] text-[15px] font-semibold transition-all border-b-2 focus:outline-none rounded-t-[6px]"
-        [ngClass]="activeSubTab === 'today' ? 'text-blue-600 bg-blue-50 border-blue-600 font-bold' : 'text-gray-400 border-transparent hover:text-gray-600 hover:bg-gray-50'">
-        Today's Duties
-      </button>
-      <button 
-        (click)="selectSubTab('upcoming')"
-        class="px-[16px] pb-[12px] pt-[8px] text-[15px] font-semibold transition-all border-b-2 focus:outline-none rounded-t-[6px]"
-        [ngClass]="activeSubTab === 'upcoming' ? 'text-blue-600 bg-blue-50 border-blue-600 font-bold' : 'text-gray-400 border-transparent hover:text-gray-600 hover:bg-gray-50'">
-        Upcoming Duties
-      </button>
-    </div>
 
-    <!-- Search Bar -->
-    <div class="relative w-full md:w-[280px] pb-[12px]">
-      <span class="absolute inset-y-0 left-0 pl-[12px] pb-[12px] flex items-center pointer-events-none">
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="11" cy="11" r="8" />
-          <path d="M21 21l-4.3-4.3" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </span>
-      <input 
-        type="text" 
-        (input)="onSearch($event)"
-        placeholder="Search configuration..." 
-        class="w-full pl-[36px] pr-[16px] py-[8px] bg-white border border-gray-300 rounded-[6px] text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+    <!-- Sub-tabs component -->
+    <div class="-mb-[1px] w-full md:w-auto">
+      <lib-sub-tabs
+        [tabs]="subTabs"
+        [activeTabId]="activeSubTab"
+        (tabChange)="selectSubTab($event)">
+      </lib-sub-tabs>
     </div>
 
   </div>
 
-  <!-- Duties List -->
-  <div class="flex flex-col gap-[16px]">
-    
-    <!-- Render each duty -->
-    <div 
-      *ngFor="let duty of filteredDuties" 
-      class="bg-white border border-gray-200 rounded-[8px] shadow-sm px-[24px] py-[20px] flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition-shadow duration-200">
-      
-      <!-- Duty Type & Icon -->
-      <div class="flex items-center gap-[16px] w-full lg:w-[22%]">
-        <div class="w-[44px] h-[44px] bg-[#f9fafb] border border-gray-100 rounded-[8px] flex items-center justify-center text-gray-600">
-          
-          <!-- Exam Duty Icon (Clipboard-Edit) -->
-          <svg *ngIf="duty.type === 'Exam Duty'" class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-          
-          <!-- Interview Duty Icon (File-Text) -->
-          <svg *ngIf="duty.type !== 'Exam Duty'" class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          
+  <!-- Duties Grid Layout: 3 columns to match Figma -->
+  <div class="flex flex-wrap gap-[20px]">
+
+    <!-- Each duty card -->
+    <div
+      *ngFor="let duty of filteredDuties"
+      class="w-full sm:w-[260px] bg-white border border-gray-200 rounded-[8px] p-[16px] shadow-sm flex flex-col">
+
+      <!-- Card Header: Title -->
+      <h4 class="text-[15px] font-semibold text-gray-900 mb-[4px]">{{ duty.type }}</h4>
+
+      <!-- Status capsule below title matching Figma colors and backgrounds -->
+      <span
+        [ngClass]="{
+          'bg-blue-50 text-blue-600 border-blue-100': duty.status === 'Assigned',
+          'bg-amber-50 text-amber-600 border-amber-100': duty.status === 'Pending'
+        }"
+        class="text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wide inline-block w-fit mb-[14px]">
+        {{ duty.status }}
+      </span>
+
+      <!-- Detail Rows -->
+      <div class="flex flex-col gap-[8px] text-[13px] flex-1">
+
+        <!-- Date -->
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Date</span>
+          <span class="text-gray-700 font-medium">{{ duty.date }}</span>
         </div>
-        <h4 class="text-[16px] font-bold text-gray-900">{{ duty.type }}</h4>
+
+        <!-- Time -->
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Time</span>
+          <span class="text-gray-700 font-medium">{{ duty.time }}</span>
+        </div>
+
+        <!-- Location -->
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Location</span>
+          <span class="text-gray-700 font-medium">{{ duty.locationRoom }}</span>
+        </div>
+
+        <!-- Assigned By -->
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Assigned By</span>
+          <span class="text-gray-700 font-medium">{{ duty.assignedBy }}</span>
+        </div>
+
       </div>
 
-      <!-- Date / Time -->
-      <div class="flex items-start gap-[12px] w-full lg:w-[26%]">
-        <div class="text-gray-400 mt-[3px]">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2" />
-            <path d="M3 9H21" stroke="currentColor" stroke-width="2" />
-            <path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-[12px] font-medium text-gray-400">Date/time</span>
-          <span class="text-[14px] font-semibold text-gray-800 mt-[2px]">{{ duty.date }}</span>
-          <span class="text-[13px] text-gray-500 mt-[1px]">{{ duty.time }}</span>
-        </div>
-      </div>
+      <!-- Divider above button -->
+      <hr class="border-gray-100 my-[14px]" />
 
-      <!-- Location -->
-      <div class="flex items-start gap-[12px] w-full lg:w-[22%]">
-        <div class="text-gray-400 mt-[3px]">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-[12px] font-medium text-gray-400">Location</span>
-          <span class="text-[14px] font-semibold text-gray-800 mt-[2px]">{{ duty.locationBuilding }}</span>
-          <span class="text-[13px] text-gray-500 mt-[1px]">{{ duty.locationRoom }}</span>
-        </div>
-      </div>
-
-      <!-- Assigned By -->
-      <div class="flex items-start gap-[12px] w-full lg:w-[22%]">
-        <div class="text-gray-400 mt-[3px]">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-[12px] font-medium text-gray-400">Assigned By</span>
-          <span class="text-[14px] font-semibold text-gray-800 mt-[2px]">{{ duty.assignedBy }}</span>
-        </div>
-      </div>
-
-      <!-- Status Pill -->
-      <div class="flex items-center lg:justify-end w-full lg:w-[8%]">
-        <span class="px-[16px] py-[6px] bg-[#eff6ff] text-[#1e40af] text-[13px] font-semibold rounded-[20px] text-center shadow-sm">
-          {{ duty.status }}
-        </span>
-      </div>
+      <!-- Request Swap Button: light blue fill with blue text (Figma style) -->
+      <button
+        (click)="openSwapModal(duty)"
+        class="w-full flex items-center justify-center gap-[6px] py-[8px] bg-blue-50 border border-blue-200 text-blue-600 font-medium rounded-[6px] text-[13px] hover:bg-blue-100 hover:border-blue-300 transition-colors cursor-pointer focus:outline-none">
+        <!-- Swap icon (two arrows) -->
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-blue-500 flex-shrink-0">
+          <path d="M5 10H19M19 10L15 6M19 10L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 4H1M1 4L5 8M1 4L5 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Request Swap
+      </button>
 
     </div>
 
-    <!-- Empty State -->
-    <div *ngIf="filteredDuties.length === 0" class="bg-white border border-gray-200 rounded-[8px] shadow-sm py-[40px] text-center text-gray-500">
-      No duties found for the selected view.
-    </div>
+  </div>
 
+  <!-- Empty State -->
+  <div *ngIf="filteredDuties.length === 0" class="bg-white border border-gray-200 rounded-[8px] shadow-sm py-[40px] text-center text-gray-400 text-[14px]">
+    No duties found for the selected view.
+  </div>
+
+  <div
+    *ngIf="showSwapModal"
+    (click)="closeSwapModal()"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+    <!-- Modal Container -->
+    <div
+      (click)="$event.stopPropagation()"
+      class="bg-white rounded-[12px] border border-gray-200 shadow-xl max-w-[480px] w-full p-[28px] flex flex-col relative">
+
+      <!-- Modal Header -->
+      <div class="mb-[20px]">
+        <h3 class="text-[18px] font-bold text-gray-900">Swap Duty Request</h3>
+        <p class="text-[12px] text-gray-400 mt-[4px]">Fill in the details below to submit your swap request.</p>
+      </div>
+
+      <!-- Selected Duty Read-only Details -->
+      <div class="bg-[#f9fafb] border border-gray-100 rounded-[8px] p-[16px] mb-[20px] flex flex-col gap-[8px] text-[13px]">
+        <div class="flex justify-between">
+          <span class="text-gray-400">Duty Type</span>
+          <span class="text-gray-700 font-semibold">{{ selectedDuty?.type }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Date</span>
+          <span class="text-gray-700 font-semibold">{{ selectedDuty?.date }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Time</span>
+          <span class="text-gray-700 font-semibold">{{ selectedDuty?.time }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Location</span>
+          <span class="text-gray-700 font-semibold">{{ selectedDuty?.locationRoom }}</span>
+        </div>
+      </div>
+
+      <!-- Swap With -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Swap With</label>
+        <lib-dropdown-lib
+          label=""
+          placeholder="Choose Faculty Member"
+          [singleSelection]="true"
+          [data]="facultyMembers"
+          idField="id"
+          textField="name"
+          [selectedItems]="selectedFacultyItems"
+          (selectionChange)="onFacultySelectionChange($event)">
+        </lib-dropdown-lib>
+      </div>
+
+      <!-- Reason for Swap -->
+      <div class="flex flex-col mb-[24px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Reason for Swap</label>
+        <textarea
+          [(ngModel)]="swapReason"
+          placeholder="Enter the reason for requesting a swap..."
+          class="w-full border border-gray-300 rounded-[6px] p-[12px] text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[80px] resize-none transition-all"></textarea>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex items-center justify-end gap-[12px]">
+        <button
+          (click)="closeSwapModal()"
+          class="px-[18px] py-[8px] bg-white border border-gray-300 text-gray-700 font-semibold rounded-[20px] text-[13px] hover:bg-gray-50 transition-colors focus:outline-none">
+          Cancel
+        </button>
+        <button
+          (click)="submitSwapRequest()"
+          class="px-[18px] py-[8px] bg-blue-600 text-white font-semibold rounded-[20px] text-[13px] hover:bg-blue-700 transition-colors focus:outline-none">
+          Submit Request
+        </button>
+      </div>
+
+    </div>
   </div>
 
 </section>

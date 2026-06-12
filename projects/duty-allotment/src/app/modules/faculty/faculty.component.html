@@ -1,9 +1,40 @@
+<div class="bg-[#fafafd] pt-[20px] px-[24px]">
+  <!-- Breadcrumb - dynamic based on active tab -->
+  <div class="text-[12px] font-semibold mb-[4px] flex items-center gap-[4px] flex-wrap">
+    <span class="text-blue-500 cursor-pointer hover:underline" (click)="onTabSelected('dashboard')">Dashboard</span>
+    <ng-container *ngIf="activeTabId !== 'dashboard'">
+      <span class="text-gray-400 font-normal">›</span>
+      <span
+        *ngIf="activeTabId === 'assigned-duties'"
+        class="text-blue-500 cursor-pointer hover:underline"
+        (click)="onTabSelected('assigned-duties')">Assigned Duties</span>
+      <span
+        *ngIf="activeTabId === 'swap-duties'"
+        class="text-blue-500 cursor-pointer hover:underline"
+        (click)="onTabSelected('swap-duties')">Swap Duties</span>
+      <span
+        *ngIf="activeTabId === 'duty-history'"
+        class="text-blue-500 cursor-pointer hover:underline"
+        (click)="onTabSelected('duty-history')">Duty History</span>
+    </ng-container>
+  </div>
+  <!-- Title - matches Figma label from the header area -->
+  <h1 class="text-[20px] font-bold text-gray-800">
+    <ng-container *ngIf="activeTabId === 'dashboard'">Dashboard</ng-container>
+    <ng-container *ngIf="activeTabId === 'assigned-duties'">Assigned Duties</ng-container>
+    <ng-container *ngIf="activeTabId === 'swap-duties'">Swap Duties</ng-container>
+    <ng-container *ngIf="activeTabId === 'duty-history'">Duty History</ng-container>
+  </h1>
+</div>
+
 <!-- Tab bar using lib-tabs -->
-<lib-tabs
-  [tabs]="tabs"
-  [activeTabId]="activeTabId"
-  (tabChange)="onTabSelected($event)">
-</lib-tabs>
+<div class="bg-[#fafafd] px-[24px]">
+  <lib-tabs
+    [tabs]="tabs"
+    [activeTabId]="activeTabId"
+    (tabChange)="onTabSelected($event)">
+  </lib-tabs>
+</div>
 
 <!-- Each child component shown based on active tab -->
 <div *ngIf="activeTabId === 'dashboard'">

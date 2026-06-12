@@ -18,17 +18,17 @@ export class FacultyComponent {
     {
       id: 'assigned-duties',
       label: 'Assigned Duties',
-      subtitle: "Today's assigned duties"
+      subtitle: "Today's Duties and Upcoming Duties"
     },
     {
       id: 'swap-duties',
       label: 'Swap Duties',
-      subtitle: 'Raise and view swap request'
+      subtitle: 'Request swap and View request'
     },
     {
       id: 'duty-history',
       label: 'Duty History',
-      subtitle: 'View previous Duties'
+      subtitle: 'Active and History'
     }
   ];
 

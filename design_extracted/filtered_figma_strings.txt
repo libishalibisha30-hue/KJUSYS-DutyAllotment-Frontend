@@ -1,0 +1,77 @@
+Active and  History
+Active and History
+Admin Block
+Admin Block A 101
+Admission Duty
+Alice Green
+Approved
+Assigned
+Assigned By
+Assigned Duties
+Assignee
+Block
+Button
+Cancel
+Completed
+Dashboard
+Date
+Date Range
+David Kumar
+Do: Use inside process-driven components such as Button or Modal while an action completes
+Dr. Alice Green
+Dr. Maria William
+Dr. Sarah Lee
+Dr. Sarah jacob
+Dr. Sevuga Pandian
+Duty
+Duty History
+Duty Name
+Edit Swap
+End Sem Exam
+End sem exam
+Enter the reason for requesting a swap...
+Exam Duty
+Export
+Fill in the details below to submit your swap requ
+Fill in the details below to submit your swap request.
+Filter
+Holding Credit Card
+Iconex/Light/Time Circle
+Location
+Pending
+Positive Green/600: Indicating success, confirmation, and the
+Positive Green/600: Indicating success, confirmation, and the 'on' state of booleans
+Reason
+Reason for Swap
+Reason for Swap Request
+Received Swap
+Request Swap
+Request swap and View request
+Room
+Shadow/Button
+Squad
+Submit Request
+Swap  Duties
+Swap Duties
+Swap Duty Request
+Swap History
+Swap Request
+Swap Requests
+Swap With
+The Slot component is a generic placeholder that makes components composable. Swap out slots with instances of other components.
+Time
+Time Circle
+Today
+Upcoming Duties
+block
+button
+date
+export
+green/500
+green/600
+green/700
+https://f36.contentful.com/components/icon-button
+invigilator
+s duties and Upcoming Duties
+t use when a text label is needed. Prefer Button
+time

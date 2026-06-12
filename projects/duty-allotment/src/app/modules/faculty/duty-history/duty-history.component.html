@@ -1,178 +1,233 @@
-<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]" (click)="closeAllMenus()">
 
-  <!-- Main Table Card -->
-  <div class="bg-white border border-gray-200 rounded-[8px] p-[24px] shadow-sm flex flex-col hover:shadow-md transition-shadow duration-200">
-    
+  <!-- Main Table Card - stretches full width of content area like the tab bar -->
+  <div class="bg-white border border-gray-200 rounded-[8px] shadow-sm flex flex-col w-full min-h-[460px]">
+
     <!-- Top Action Row -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-[24px]">
-      
+    <div class="flex items-center justify-between gap-3 px-[20px] pt-[16px] pb-[12px] flex-wrap">
+
       <!-- Search Input -->
-      <div class="relative w-full md:w-[280px]">
-        <span class="absolute inset-y-0 left-0 pl-[12px] flex items-center pointer-events-none">
-          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="11" cy="11" r="8" />
-            <path d="M21 21l-4.3-4.3" stroke-linecap="round" stroke-linejoin="round" />
+      <div class="relative" (click)="$event.stopPropagation()">
+        <span class="absolute inset-y-0 left-0 pl-[10px] flex items-center pointer-events-none">
+          <svg class="w-[13px] h-[13px] text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.3-4.3" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </span>
-        <input 
-          type="text" 
+        <input
+          type="text"
           (input)="onSearch($event)"
-          placeholder="Search Duties..." 
-          class="w-full pl-[36px] pr-[16px] py-[8px] bg-white border border-gray-300 rounded-[6px] text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+          placeholder="Search Duties..."
+          class="pl-[30px] pr-[12px] py-[7px] bg-white border border-gray-200 rounded-[6px] text-[12px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 transition-colors w-[200px]" />
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-[12px] flex-wrap">
-        
+      <!-- Right Buttons -->
+      <div class="flex items-center gap-[8px]" (click)="$event.stopPropagation()">
+
         <!-- Date Range -->
-        <button 
-          (click)="onOpenDateRange()"
-          class="px-[14px] py-[8px] bg-white border border-gray-300 rounded-[6px] hover:bg-gray-50 transition-colors text-[13px] font-semibold text-gray-600 flex items-center gap-[8px] focus:outline-none cursor-pointer shadow-sm">
-          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2" />
-            <path d="M3 9H21" stroke="currentColor" stroke-width="2" />
-            <path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-          Date Range
-        </button>
+        <div class="relative">
+          <button
+            (click)="toggleDatePanel()"
+            class="px-[12px] py-[7px] bg-white border rounded-[6px] text-[12px] font-medium flex items-center gap-[6px] focus:outline-none cursor-pointer transition-colors"
+            [ngClass]="(dateFrom || dateTo) ? 'border-blue-400 text-blue-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'">
+            <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9H21" /><path d="M8 2V5" stroke-linecap="round" /><path d="M16 2V5" stroke-linecap="round" />
+            </svg>
+            Date Range
+            <span *ngIf="dateFrom || dateTo" class="w-[5px] h-[5px] rounded-full bg-blue-500 inline-block"></span>
+          </button>
+          <!-- Date Dropdown -->
+          <div *ngIf="showDatePanel"
+            class="absolute right-0 top-full mt-[6px] z-50 bg-white border border-gray-200 rounded-[8px] shadow-xl p-[14px] w-[220px]"
+            (click)="$event.stopPropagation()">
+            <p class="text-[12px] font-bold text-gray-700 mb-[10px]">Date Range</p>
+            <div class="flex flex-col gap-[8px]">
+              <div>
+                <label class="text-[11px] text-gray-400 font-semibold mb-[3px] block">From</label>
+                <input type="date" [(ngModel)]="dateFrom"
+                  class="w-full border border-gray-200 rounded-[5px] px-[8px] py-[5px] text-[12px] text-gray-700 focus:outline-none focus:border-blue-400" />
+              </div>
+              <div>
+                <label class="text-[11px] text-gray-400 font-semibold mb-[3px] block">To</label>
+                <input type="date" [(ngModel)]="dateTo"
+                  class="w-full border border-gray-200 rounded-[5px] px-[8px] py-[5px] text-[12px] text-gray-700 focus:outline-none focus:border-blue-400" />
+              </div>
+            </div>
+            <div class="flex gap-[6px] mt-[12px]">
+              <button (click)="clearDateRange()"
+                class="flex-1 py-[6px] border border-gray-200 rounded-[5px] text-[12px] text-gray-600 font-semibold hover:bg-gray-50 focus:outline-none">Clear</button>
+              <button (click)="applyDateRange()"
+                class="flex-1 py-[6px] bg-blue-600 hover:bg-blue-700 text-white rounded-[5px] text-[12px] font-semibold focus:outline-none">Apply</button>
+            </div>
+          </div>
+        </div>
 
         <!-- Filters -->
-        <button 
-          (click)="onOpenFilters()"
-          class="px-[14px] py-[8px] bg-white border border-gray-300 rounded-[6px] hover:bg-gray-50 transition-colors text-[13px] font-semibold text-gray-600 flex items-center gap-[8px] focus:outline-none cursor-pointer shadow-sm">
-          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
-          Filters
-        </button>
+        <div class="relative">
+          <button
+            (click)="toggleFilterPanel()"
+            class="px-[12px] py-[7px] bg-white border rounded-[6px] text-[12px] font-medium flex items-center gap-[6px] focus:outline-none cursor-pointer transition-colors"
+            [ngClass]="filterStatus ? 'border-blue-400 text-blue-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'">
+            <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+            <span *ngIf="filterStatus" class="w-[5px] h-[5px] rounded-full bg-blue-500 inline-block"></span>
+          </button>
+          <!-- Filter Dropdown -->
+          <div *ngIf="showFilterPanel"
+            class="absolute right-0 top-full mt-[6px] z-50 bg-white border border-gray-200 rounded-[8px] shadow-xl p-[14px] w-[180px]"
+            (click)="$event.stopPropagation()">
+            <p class="text-[12px] font-bold text-gray-700 mb-[8px]">Filter by Status</p>
+            <div class="flex flex-col gap-[6px]">
+              <label class="flex items-center gap-[7px] cursor-pointer"><input type="radio" name="fs" value="" [(ngModel)]="filterStatus" class="accent-blue-600" /><span class="text-[12px] text-gray-600">All</span></label>
+              <label class="flex items-center gap-[7px] cursor-pointer"><input type="radio" name="fs" value="Completed" [(ngModel)]="filterStatus" class="accent-blue-600" /><span class="text-[12px] text-emerald-600">Completed</span></label>
+              <label class="flex items-center gap-[7px] cursor-pointer"><input type="radio" name="fs" value="Pending" [(ngModel)]="filterStatus" class="accent-blue-600" /><span class="text-[12px] text-amber-600">Pending</span></label>
+              <label class="flex items-center gap-[7px] cursor-pointer"><input type="radio" name="fs" value="Cancelled" [(ngModel)]="filterStatus" class="accent-blue-600" /><span class="text-[12px] text-red-500">Cancelled</span></label>
+            </div>
+            <div class="flex gap-[6px] mt-[10px]">
+              <button (click)="clearFilters()" class="flex-1 py-[5px] border border-gray-200 rounded-[5px] text-[12px] text-gray-600 font-semibold hover:bg-gray-50 focus:outline-none">Clear</button>
+              <button (click)="applyFilters()" class="flex-1 py-[5px] bg-blue-600 hover:bg-blue-700 text-white rounded-[5px] text-[12px] font-semibold focus:outline-none">Apply</button>
+            </div>
+          </div>
+        </div>
 
         <!-- Export -->
-        <button 
-          (click)="onExport()"
-          class="px-[14px] py-[8px] bg-blue-600 hover:bg-blue-700 text-white rounded-[6px] transition-colors text-[13px] font-semibold flex items-center gap-[8px] focus:outline-none cursor-pointer shadow-sm">
-          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <button (click)="onExport()"
+          class="px-[14px] py-[7px] bg-blue-600 hover:bg-blue-700 text-white rounded-[6px] text-[12px] font-semibold flex items-center gap-[6px] focus:outline-none cursor-pointer transition-colors">
+          <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
           Export
         </button>
 
       </div>
-
     </div>
 
-    <!-- Table Container -->
+    <!-- Table - full width -->
     <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse min-w-[750px]">
+      <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-gray-200 text-gray-400 font-bold text-[11px] uppercase tracking-wider bg-gray-50/50">
-            <th class="py-[12px] px-[16px]">Employ ID</th>
-            <th class="py-[12px] px-[16px]">Duty Name</th>
-            <th class="py-[12px] px-[16px]">Date</th>
-            <th class="py-[12px] px-[16px]">Event Name</th>
-            <th class="py-[12px] px-[16px]">Status</th>
-            <th class="py-[12px] px-[16px] inline-flex items-center gap-[4px] cursor-pointer hover:text-gray-600 transition-colors">
-              Assignee
-              <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-              </svg>
+          <tr class="border-y border-gray-100 bg-gray-50/60 text-gray-400 text-[11px] font-bold uppercase tracking-wide">
+            <th class="py-[10px] px-[20px] whitespace-nowrap">Employ ID</th>
+            <th class="py-[10px] px-[16px] whitespace-nowrap">Duty Name</th>
+            <th class="py-[10px] px-[16px] whitespace-nowrap">Date</th>
+            <th class="py-[10px] px-[16px] whitespace-nowrap">Event Name</th>
+            <th class="py-[10px] px-[16px] whitespace-nowrap">Status</th>
+            <th class="py-[10px] px-[16px] whitespace-nowrap">
+              <button (click)="sortBy('assignee')" class="flex items-center gap-[4px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-wide text-[11px] focus:outline-none">
+                Assignee
+                <svg class="w-[11px] h-[11px]" [ngClass]="sortColumn === 'assignee' ? 'text-blue-500' : 'text-gray-300'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    [attr.d]="sortColumn === 'assignee' && sortDirection === 'asc'
+                      ? 'M8 15l4 4 4-4M12 4v15'
+                      : sortColumn === 'assignee' && sortDirection === 'desc'
+                      ? 'M16 9l-4-4-4 4M12 20V5'
+                      : 'M8 9l4-4 4 4m0 6l-4 4-4-4'" />
+                </svg>
+              </button>
             </th>
-            <th class="py-[12px] px-[16px] text-right">Actions</th>
+            <th class="py-[10px] px-[16px] text-right whitespace-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          <tr *ngFor="let item of filteredHistory" class="hover:bg-gray-50/50 transition-colors">
-            
+          <tr *ngFor="let item of pagedHistory" class="hover:bg-gray-50/60 transition-colors">
+
             <!-- Employ ID -->
-            <td class="py-[16px] px-[16px] text-[13px] font-semibold text-gray-800">
-              {{ item.employId }}
-            </td>
-            
+            <td class="py-[16px] px-[20px] text-[13px] font-semibold text-gray-700 whitespace-nowrap">{{ item.employId }}</td>
+
             <!-- Duty Name -->
-            <td class="py-[16px] px-[16px] text-[13px] text-gray-700">
-              {{ item.dutyName }}
-            </td>
-            
+            <td class="py-[16px] px-[16px] text-[13px] text-gray-700 whitespace-nowrap">{{ item.dutyName }}</td>
+
             <!-- Date -->
-            <td class="py-[16px] px-[16px] text-[13px] text-gray-500">
-              {{ item.date }}
-            </td>
-            
+            <td class="py-[16px] px-[16px] text-[13px] text-gray-500 whitespace-nowrap">{{ item.date }}</td>
+
             <!-- Event Name -->
-            <td class="py-[16px] px-[16px] text-[13px] font-bold text-gray-900">
-              {{ item.eventName }}
-            </td>
-            
-            <!-- Status -->
-            <td class="py-[16px] px-[16px] text-[13px]">
-              <span class="px-[12px] py-[4px] bg-green-50 text-green-700 text-[12px] font-semibold rounded-[20px] border border-green-200 shadow-sm">
+            <td class="py-[16px] px-[16px] text-[13px] font-bold text-gray-900 whitespace-nowrap">{{ item.eventName }}</td>
+
+            <!-- Status Badge -->
+            <td class="py-[16px] px-[16px] whitespace-nowrap">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-600 border-emerald-200': item.status === 'Completed',
+                'bg-amber-50 text-amber-600 border-amber-200': item.status === 'Pending',
+                'bg-red-50 text-red-500 border-red-200': item.status === 'Cancelled'
+              }" class="px-[10px] py-[3px] text-[11px] font-bold rounded-full border inline-block">
                 {{ item.status }}
               </span>
             </td>
-            
+
             <!-- Assignee -->
-            <td class="py-[16px] px-[16px] text-[13px] text-gray-700">
-              {{ item.assignee }}
-            </td>
-            
-            <!-- Actions -->
-            <td class="py-[16px] px-[16px] text-right">
-              <div class="flex items-center justify-end gap-[12px] text-gray-400">
-                
-                <!-- View Details -->
-                <button (click)="viewDetails(item.id)" class="hover:text-blue-600 transition-colors p-1 focus:outline-none" title="View Details">
-                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </button>
-                
-                <!-- Edit -->
-                <button (click)="editDuty(item.id)" class="hover:text-amber-600 transition-colors p-1 focus:outline-none" title="Edit Record">
-                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                
-                <!-- Delete -->
-                <button (click)="deleteDuty(item.id)" class="hover:text-red-600 transition-colors p-1 focus:outline-none" title="Delete Record">
-                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <td class="py-[16px] px-[16px] text-[13px] text-gray-700 whitespace-nowrap">{{ item.assignee }}</td>
+
+            <!-- Actions: three-dot reveals inline icons -->
+            <td class="py-[16px] px-[16px] text-right whitespace-nowrap" (click)="$event.stopPropagation()">
+              <div class="flex items-center justify-end gap-[6px]">
+
+                <!-- Inline icons: visible only when this row's menu is open -->
+                <ng-container *ngIf="openMenuId === item.id">
+
+                  <!-- View -->
+                  <button (click)="viewDetails(item.id)" title="View Details"
+                    class="w-[28px] h-[28px] flex items-center justify-center rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors focus:outline-none">
+                    <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+
+                  <!-- Edit -->
+                  <button (click)="editDuty(item.id)" title="Edit"
+                    class="w-[28px] h-[28px] flex items-center justify-center rounded-full text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors focus:outline-none">
+                    <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+
+                  <!-- Delete -->
+                  <button (click)="deleteDuty(item.id)" title="Delete"
+                    class="w-[28px] h-[28px] flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors focus:outline-none">
+                    <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+
+                </ng-container>
+
+                <!-- Three-dot toggle button — always visible -->
+                <button (click)="toggleRowMenu(item.id, $event)" title="Actions"
+                  class="w-[28px] h-[28px] flex items-center justify-center rounded-full transition-colors focus:outline-none"
+                  [ngClass]="openMenuId === item.id ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'">
+                  <svg class="w-[14px] h-[14px]" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
                   </svg>
                 </button>
 
-                <!-- More Options -->
-                <button class="hover:text-gray-600 transition-colors p-1 focus:outline-none" title="More Options">
-                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-                    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                    <circle cx="12" cy="19" r="1.5" fill="currentColor" />
-                  </svg>
-                </button>
-                
               </div>
             </td>
-            
+
           </tr>
         </tbody>
       </table>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="filteredHistory.length === 0" class="py-[40px] text-center text-gray-500">
+    <div *ngIf="filteredSortedHistory.length === 0" class="flex-1 flex flex-col items-center justify-center py-[60px] text-gray-400 text-[13px]">
+      <svg class="w-[40px] h-[40px] mb-[12px] text-gray-200" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
       No duty history records found.
     </div>
 
+    <!-- Spacer to push footer to bottom -->
+    <div class="flex-1"></div>
+
     <!-- Footer / Pagination -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-[24px] pt-[16px] border-t border-gray-150 gap-4">
-      
-      <!-- Rows per page selection -->
-      <div class="flex items-center gap-[8px] text-[13px] text-gray-500">
-        <span>Rows per page</span>
-        <select 
-          (change)="onRowsChange($event)"
-          [value]="rowsPerPage"
-          class="border border-gray-300 rounded-[6px] px-[8px] py-[4px] bg-white text-gray-700 outline-none text-[12px] cursor-pointer focus:border-blue-500">
+    <div class="flex items-center justify-between px-[20px] py-[14px] border-t border-gray-100 gap-3 flex-wrap">
+
+      <!-- Rows per page -->
+      <div class="flex items-center gap-[8px] text-[12px] text-gray-500">
+        <span class="whitespace-nowrap">Rows per page</span>
+        <select (change)="onRowsChange($event)" [value]="rowsPerPage"
+          class="border border-gray-200 rounded-[5px] px-[8px] py-[4px] bg-white text-gray-700 outline-none text-[12px] cursor-pointer focus:border-blue-400">
           <option [value]="5">5</option>
           <option [value]="10">10</option>
           <option [value]="25">25</option>
@@ -181,64 +236,108 @@
       </div>
 
       <!-- Page navigation -->
-      <div class="flex items-center gap-[16px]">
-        
-        <!-- Total items display -->
-        <span class="text-[13px] text-gray-500">
-          1 - {{ rowsPerPage > filteredHistory.length ? filteredHistory.length : rowsPerPage }} of {{ totalRows }}
-        </span>
+      <div class="flex items-center gap-[14px]">
+        <span class="text-[12px] text-gray-500 whitespace-nowrap">{{ startRow }} – {{ endRow }} of {{ totalFilteredRows }}</span>
+        <div class="flex items-center gap-[4px]">
+          <!-- Prev -->
+          <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[16px] select-none focus:outline-none transition-colors"
+            [ngClass]="currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-50 cursor-pointer'">‹</button>
 
-        <!-- Page Buttons -->
-        <div class="flex items-center gap-[6px]">
-          
-          <!-- Previous Page Button -->
-          <button 
-            [disabled]="currentPage === 1"
-            (click)="onPageChange(currentPage - 1)"
-            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-gray-300 text-[15px] select-none focus:outline-none"
-            [ngClass]="currentPage === 1 ? 'cursor-not-allowed text-gray-300' : 'text-blue-600 hover:bg-gray-100 cursor-pointer'">
-            ‹
-          </button>
-          
-          <!-- Page 1 (Active) -->
-          <button 
-            (click)="onPageChange(1)"
-            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
-            [ngClass]="currentPage === 1 ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-blue-600 hover:bg-gray-100 font-medium'">
-            1
-          </button>
-          
-          <!-- Page 2 -->
-          <button 
-            (click)="onPageChange(2)"
-            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
-            [ngClass]="currentPage === 2 ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-blue-600 hover:bg-gray-100 font-medium'">
-            2
-          </button>
+          <!-- Page numbers -->
+          <ng-container *ngFor="let page of pageNumbers">
+            <button
+              *ngIf="totalPages <= 5 || page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)"
+              (click)="onPageChange(page)"
+              class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
+              [ngClass]="currentPage === page ? 'bg-blue-600 text-white shadow-sm' : 'text-blue-600 hover:bg-blue-50'">
+              {{ page }}
+            </button>
+          </ng-container>
 
-          <!-- Page 3 -->
-          <button 
-            (click)="onPageChange(3)"
-            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all focus:outline-none"
-            [ngClass]="currentPage === 3 ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-blue-600 hover:bg-gray-100 font-medium'">
-            3
-          </button>
-
-          <!-- Next Page Button -->
-          <button 
-            [disabled]="currentPage === 3"
-            (click)="onPageChange(currentPage + 1)"
-            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-blue-600 text-[15px] select-none focus:outline-none"
-            [ngClass]="currentPage === 3 ? 'cursor-not-allowed text-gray-300' : 'text-blue-600 hover:bg-gray-100 cursor-pointer'">
-            ›
-          </button>
-
+          <!-- Next -->
+          <button [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)"
+            class="w-[28px] h-[28px] rounded-full flex items-center justify-center text-[16px] select-none focus:outline-none transition-colors"
+            [ngClass]="currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-50 cursor-pointer'">›</button>
         </div>
-
       </div>
-
     </div>
 
   </div>
 
 </section>
+
+<!-- ─── VIEW MODAL ─── -->
+<div *ngIf="showViewModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-[12px] border border-gray-200 shadow-xl max-w-[420px] w-full p-[24px] relative">
+    <div class="flex items-start justify-between mb-[18px]">
+      <div>
+        <h3 class="text-[16px] font-bold text-gray-900">Duty Details</h3>
+        <p class="text-[11px] text-gray-400 mt-[2px]">Full details of the selected duty record.</p>
+      </div>
+      <button (click)="closeViewModal()" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 focus:outline-none">
+        <svg class="w-[16px] h-[16px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+    <div class="bg-gray-50 border border-gray-100 rounded-[8px] p-[16px] flex flex-col gap-[10px] text-[13px]">
+      <div class="flex justify-between"><span class="text-gray-400">Employee ID</span><span class="text-gray-800 font-bold">{{ viewingItem?.employId }}</span></div>
+      <div class="flex justify-between"><span class="text-gray-400">Duty Name</span><span class="text-gray-800 font-semibold">{{ viewingItem?.dutyName }}</span></div>
+      <div class="flex justify-between"><span class="text-gray-400">Date</span><span class="text-gray-700 font-semibold">{{ viewingItem?.date }}</span></div>
+      <div class="flex justify-between"><span class="text-gray-400">Event Name</span><span class="text-gray-800 font-semibold">{{ viewingItem?.eventName }}</span></div>
+      <div class="flex justify-between items-center">
+        <span class="text-gray-400">Status</span>
+        <span [ngClass]="{'bg-emerald-50 text-emerald-600 border-emerald-200': viewingItem?.status === 'Completed','bg-amber-50 text-amber-600 border-amber-200': viewingItem?.status === 'Pending','bg-red-50 text-red-500 border-red-200': viewingItem?.status === 'Cancelled'}"
+          class="px-[10px] py-[2px] text-[11px] font-bold rounded-full border">{{ viewingItem?.status }}</span>
+      </div>
+      <div class="flex justify-between"><span class="text-gray-400">Assignee</span><span class="text-gray-700 font-semibold">{{ viewingItem?.assignee }}</span></div>
+    </div>
+    <div class="flex justify-end mt-[20px]">
+      <button (click)="closeViewModal()" class="px-[20px] py-[8px] bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-[20px] text-[13px] transition-colors focus:outline-none">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EDIT MODAL ─── -->
+<div *ngIf="showEditModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-[12px] border border-gray-200 shadow-xl max-w-[440px] w-full p-[24px] relative">
+    <div class="flex items-start justify-between mb-[18px]">
+      <div>
+        <h3 class="text-[16px] font-bold text-gray-900">Edit Duty Record</h3>
+        <p class="text-[11px] text-gray-400 mt-[2px]">Update the duty record details below.</p>
+      </div>
+      <button (click)="closeEditModal()" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 focus:outline-none">
+        <svg class="w-[16px] h-[16px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+    <div class="bg-gray-50 border border-gray-100 rounded-[8px] p-[12px] mb-[16px] flex flex-col gap-[8px] text-[13px]">
+      <div class="flex justify-between"><span class="text-gray-400">Employee ID</span><span class="text-gray-700 font-semibold">{{ editingItem?.employId }}</span></div>
+      <div class="flex justify-between"><span class="text-gray-400">Date</span><span class="text-gray-700 font-semibold">{{ editingItem?.date }}</span></div>
+    </div>
+    <div class="flex flex-col gap-[13px] mb-[20px]">
+      <div class="flex flex-col">
+        <label class="text-[11px] font-semibold text-gray-700 mb-[5px]">Duty Name</label>
+        <input [(ngModel)]="editDutyName" type="text" class="border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 transition-all" />
+      </div>
+      <div class="flex flex-col">
+        <label class="text-[11px] font-semibold text-gray-700 mb-[5px]">Event Name</label>
+        <input [(ngModel)]="editEventName" type="text" class="border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 transition-all" />
+      </div>
+      <div class="flex flex-col">
+        <label class="text-[11px] font-semibold text-gray-700 mb-[5px]">Assignee</label>
+        <input [(ngModel)]="editAssignee" type="text" class="border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 transition-all" />
+      </div>
+      <div class="flex flex-col">
+        <label class="text-[11px] font-semibold text-gray-700 mb-[5px]">Status</label>
+        <select [(ngModel)]="editStatus" class="border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 bg-white transition-all">
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-[10px]">
+      <button (click)="closeEditModal()" class="px-[18px] py-[8px] bg-white border border-gray-300 text-gray-700 font-semibold rounded-[20px] text-[13px] hover:bg-gray-50 transition-colors focus:outline-none">Cancel</button>
+      <button (click)="saveEdit()" class="px-[18px] py-[8px] bg-blue-600 text-white font-semibold rounded-[20px] text-[13px] hover:bg-blue-700 transition-colors focus:outline-none">Save Changes</button>
+    </div>
+  </div>
+</div>

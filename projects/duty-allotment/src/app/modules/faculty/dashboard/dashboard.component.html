@@ -1,162 +1,61 @@
-<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[120px]">
 
-  <!-- Dashboard Cards -->
-  <div class="flex flex-wrap items-start gap-[24px] md:gap-[36px]">
+  <!-- ── Stat Cards Row ─────────────────────────────────────────────────── -->
+  <div class="flex flex-wrap gap-[24px] mb-[28px] w-full">
 
-    <!-- Assigned Duties -->
-    <div
-      class="w-[300px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
-      <div class="flex items-start justify-between">
-        <h3 class="text-[15px] font-semibold text-gray-800 leading-tight">
-          Assigned Duties
-        </h3>
-        <div class="flex-shrink-0">
-          <svg class="w-7 h-7 text-gray-800" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2" />
-            <path d="M3 9H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M7 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M17 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <circle cx="7" cy="13" r="1" fill="currentColor" />
-            <circle cx="12" cy="13" r="1" fill="currentColor" />
-            <circle cx="17" cy="13" r="1" fill="currentColor" />
-            <circle cx="7" cy="17" r="1" fill="currentColor" />
-            <circle cx="12" cy="17" r="1" fill="currentColor" />
-            <circle cx="17" cy="17" r="1" fill="currentColor" />
-          </svg>
-        </div>
-      </div>
-      <div class="flex items-end justify-start">
-        <span class="text-[36px] font-bold text-gray-900 leading-none">00</span>
+    <!-- Assigned Duties Card -->
+    <div class="relative w-full lg:flex-1 bg-white border border-slate-100 rounded-[12px] shadow-sm px-[32px] py-[24px] min-h-[160px] flex flex-col hover:shadow-md transition-shadow duration-200 overflow-hidden">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#bae6fd] to-[#93c5fd] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <h3 class="text-[16px] font-semibold text-slate-500 relative z-10">Assigned Duties</h3>
+      <div class="flex-grow flex items-end justify-start mt-[8px]">
+        <p class="text-[48px] font-bold text-slate-800 relative z-10 leading-none">{{ assignedDutiesCount }}</p>
       </div>
     </div>
 
-    <!-- Upcoming Duties -->
-    <div
-      class="w-[300px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
-      <div class="flex items-start justify-between">
-        <h3 class="text-[15px] font-semibold text-gray-800 leading-tight">
-          Upcoming Duties
-        </h3>
-        <div class="flex-shrink-0">
-          <svg class="w-7 h-7 text-gray-800" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
-            <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </div>
-      </div>
-      <div class="flex items-end justify-start">
-        <span class="text-[36px] font-bold text-gray-900 leading-none">00</span>
+    <!-- Upcoming Duties Card -->
+    <div class="relative w-full lg:flex-1 bg-white border border-slate-100 rounded-[12px] shadow-sm px-[32px] py-[24px] min-h-[160px] flex flex-col hover:shadow-md transition-shadow duration-200 overflow-hidden">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#fecaca] to-[#fca5a5] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <h3 class="text-[16px] font-semibold text-slate-500 relative z-10">Upcoming Duties</h3>
+      <div class="flex-grow flex items-end justify-start mt-[8px]">
+        <p class="text-[48px] font-bold text-slate-800 relative z-10 leading-none">{{ upcomingDutiesCount }}</p>
       </div>
     </div>
 
-    <!-- Swap Request -->
-    <div
-      class="w-[300px] h-[120px] bg-white border border-gray-200 rounded-[8px] shadow-sm px-[20px] py-[18px] flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
-      <div class="flex items-start justify-between">
-        <h3 class="text-[15px] font-semibold text-gray-800 leading-tight">
-          Swap Request
-        </h3>
-        <div class="flex-shrink-0">
-          <svg class="w-7 h-7 text-gray-800" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 8h16M16 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-            <path d="M20 16H4M8 12l-4 4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </div>
-      </div>
-      <div class="flex items-end justify-start">
-        <span class="text-[36px] font-bold text-gray-900 leading-none">00</span>
+    <!-- Swap Requests Card -->
+    <div class="relative w-full lg:flex-1 bg-white border border-slate-100 rounded-[12px] shadow-sm px-[32px] py-[24px] min-h-[160px] flex flex-col hover:shadow-md transition-shadow duration-200 overflow-hidden">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#e9d5ff] to-[#c084fc] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <h3 class="text-[16px] font-semibold text-slate-500 relative z-10">Swap Requests</h3>
+      <div class="flex-grow flex items-end justify-start mt-[8px]">
+        <p class="text-[48px] font-bold text-slate-800 relative z-10 leading-none">{{ swapRequestCount }}</p>
       </div>
     </div>
 
   </div>
 
-  <!-- Main Content Row: Calendar and Duties side by side -->
-  <div class="mt-[40px] flex flex-wrap xl:flex-nowrap items-start gap-[24px] w-full">
+  <!-- ── Bottom Row: Duties Table (left) | Calendar + Panel (right) ────────── -->
+  <div class="flex flex-col lg:flex-row gap-[24px] w-full items-start">
 
-    <!-- Calendar Card -->
-    <div class="w-[300px] flex-shrink-0 bg-white border border-gray-200 rounded-[8px] shadow-sm p-[24px] hover:shadow-md transition-shadow duration-200 relative">
+    <!-- ── LEFT: Duties Table Card (w-[50%]) ── -->
+    <div class="w-full lg:flex-1 bg-white border border-gray-200 rounded-[12px] shadow-sm p-[32px] hover:shadow-md transition-shadow duration-200 overflow-x-auto">
 
-      <!-- Month + Nav -->
-      <div class="flex items-center justify-between mb-[24px]">
-        <h2 class="text-[17px] font-bold text-gray-800 tracking-tight">{{ monthLabel }}</h2>
-        <div class="flex items-center gap-[12px] text-gray-600">
-          <button
-            (click)="prevMonth()"
-            class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">‹</button>
-          <button
-            (click)="nextMonth()"
-            class="hover:text-blue-600 transition-colors text-[20px] font-bold leading-none p-1 rounded hover:bg-gray-100">›</button>
-        </div>
-      </div>
-
-      <!-- Day headers -->
-      <div class="grid grid-cols-7 text-[12px] font-bold text-gray-400 text-center mb-[16px]">
-        <span *ngFor="let h of dayHeaders">{{ h }}</span>
-      </div>
-
-      <!-- Date grid -->
-      <div class="grid grid-cols-7 gap-y-[8px] text-[13px] text-center text-gray-700">
-        <ng-container *ngFor="let week of calendarWeeks">
-          <span
-            *ngFor="let day of week"
-            class="flex flex-col items-center justify-center w-9 h-9"
-            [class.cursor-pointer]="!!day.day"
-            (click)="onDayClick(day)">
-
-            <!-- Empty cell -->
-            <ng-container *ngIf="!day.day"></ng-container>
-
-            <!-- Today (not selected) — outline ring only, NOT filled -->
-            <span
-              *ngIf="day.day && day.isToday && !day.isSelected"
-              class="w-8 h-8 flex flex-col items-center justify-center rounded-full ring-2 ring-blue-500 text-blue-600 font-bold cursor-pointer select-none hover:bg-blue-50 transition-colors duration-150">
-              <span>{{ day.day }}</span>
-              <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
-            </span>
-
-            <!-- Selected (any day including today) — filled blue -->
-            <span
-              *ngIf="day.day && day.isSelected"
-              class="w-8 h-8 flex flex-col items-center justify-center bg-blue-600 text-white rounded-full font-bold cursor-pointer select-none shadow-sm transition-colors duration-150">
-              <span>{{ day.day }}</span>
-              <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-300 mt-[1px]"></span>
-            </span>
-
-            <!-- Normal day -->
-            <span
-              *ngIf="day.day && !day.isToday && !day.isSelected"
-              class="w-8 h-8 flex flex-col items-center justify-center font-semibold text-gray-800 rounded-full hover:bg-gray-100 cursor-pointer transition-colors duration-150 select-none">
-              <span>{{ day.day }}</span>
-              <span *ngIf="day.hasDuty" class="w-1 h-1 rounded-full bg-orange-400 mt-[1px]"></span>
-            </span>
-
-          </span>
-        </ng-container>
-      </div>
-
-    </div>
-
-    <!-- Duties Table Card -->
-    <div class="flex-grow min-w-[320px] bg-white border border-gray-200 rounded-[8px] shadow-sm p-[24px] hover:shadow-md transition-shadow duration-200 overflow-x-auto">
-      
-      <!-- Card Header -->
-      <div class="mb-[24px]">
-        <h2 class="text-[20px] font-bold text-gray-800 tracking-tight">Duties</h2>
+      <!-- Header -->
+      <div class="mb-[20px]">
+        <h2 class="text-[18px] font-bold text-gray-800">Duties</h2>
         <p class="text-[12px] text-gray-400 mt-[2px]">Duties on your schedule</p>
       </div>
 
       <!-- Table -->
-      <table class="w-full min-w-[580px] text-left border-collapse">
+      <table class="w-full min-w-[560px] text-left border-collapse">
         <thead>
           <tr class="border-b border-gray-100">
-            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Date</th>
-            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Event Name</th>
-            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Time</th>
-            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Location</th>
-            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider pr-[24px]">Date</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider w-full pr-[24px]">Event Name</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider pr-[32px]">Time</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider pr-[32px]">Location</th>
+            <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider pr-[32px]">
               <span class="inline-flex items-center gap-1">
                 Assignee
                 <svg class="w-2.5 h-2.5 text-blue-500" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -168,31 +67,27 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let duty of duties" class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/30 transition-colors">
+          <tr *ngFor="let duty of duties" class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/40 transition-colors">
             <!-- Date -->
-            <td class="py-4 text-[13px] font-bold text-gray-800 whitespace-nowrap">{{ duty.date }}</td>
-            
+            <td class="py-[14px] text-[13px] font-bold text-gray-800 whitespace-nowrap pr-[24px]">{{ duty.date }}</td>
             <!-- Event Name -->
-            <td class="py-4">
-              <div class="text-[13px] font-bold text-gray-850">{{ duty.eventName }}</div>
-              <div class="text-[11px] text-gray-400 font-medium mt-[1px]">{{ duty.eventSub }}</div>
+            <td class="py-[14px] pr-[24px]">
+               <div class="text-[13px] font-bold text-gray-800">{{ duty.eventName }}</div>
+               <div class="text-[11px] text-slate-400 font-normal mt-[1px]">{{ duty.eventSub }}</div>
             </td>
-            
             <!-- Time -->
-            <td class="py-4 text-[13px] text-gray-500 font-medium whitespace-nowrap">{{ duty.time }}</td>
-            
+            <td class="py-[14px] text-[13px] text-gray-500 font-medium whitespace-nowrap pr-[32px]">{{ duty.time }}</td>
             <!-- Location -->
-            <td class="py-4 text-[13px] text-gray-600 font-semibold whitespace-nowrap">{{ duty.location }}</td>
-            
+            <td class="py-[14px] text-[13px] text-gray-700 font-semibold whitespace-nowrap pr-[32px]">{{ duty.location }}</td>
             <!-- Assignee -->
-            <td class="py-4 text-[13px] text-gray-600 font-medium whitespace-nowrap">{{ duty.assignee }}</td>
-            
+            <td class="py-[14px] text-[13px] text-gray-600 font-medium whitespace-nowrap pr-[32px]">{{ duty.assignee }}</td>
             <!-- Status -->
-            <td class="py-4 whitespace-nowrap">
+            <td class="py-[14px] whitespace-nowrap">
               <span [ngClass]="{
-                'bg-emerald-50 text-emerald-600 border border-emerald-100/70': duty.status === 'Assigned',
-                'bg-amber-50 text-amber-600 border border-amber-100/70': duty.status === 'Pending'
-              }" class="px-[8px] py-[3px] rounded-[4px] text-[11px] font-bold">
+                'bg-emerald-50 text-emerald-600 border-emerald-100': duty.status === 'Assigned',
+                'bg-amber-50 text-amber-500 border-amber-100':   duty.status === 'Pending',
+                'bg-blue-50 text-blue-500 border-blue-100':    duty.status === 'Approved'
+              }" class="text-[11px] font-semibold px-2.5 py-1 rounded-[6px] border">
                 {{ duty.status }}
               </span>
             </td>
@@ -202,6 +97,129 @@
 
     </div>
 
+    <!-- ── RIGHT: Calendar + Today Panel (w-[50%]) ── -->
+    <div class="w-full lg:flex-1 bg-white border border-gray-200 rounded-[12px] shadow-sm p-[32px] flex flex-col sm:flex-row gap-[24px] hover:shadow-md transition-shadow duration-200">
+
+      <!-- Left half: Calendar Section -->
+      <div class="flex-1">
+
+        <!-- Month + Nav -->
+        <div class="flex items-center justify-between mb-[18px]">
+          <h2 class="text-[15px] font-bold text-gray-800">{{ monthLabel }}</h2>
+          <div class="flex items-center gap-[8px] text-gray-500">
+            <button
+              (click)="prevMonth()"
+              class="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 transition-colors text-[18px] font-bold leading-none select-none">‹</button>
+            <button
+              (click)="nextMonth()"
+              class="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 transition-colors text-[18px] font-bold leading-none select-none">›</button>
+          </div>
+        </div>
+
+        <!-- Day headers -->
+        <div class="grid grid-cols-7 text-[11px] font-bold text-gray-400 text-center mb-[10px]">
+          <span *ngFor="let h of dayHeaders">{{ h }}</span>
+        </div>
+
+        <!-- Date grid -->
+        <div class="grid grid-cols-7 gap-y-[4px] text-[12px] text-center text-gray-700">
+          <ng-container *ngFor="let week of calendarWeeks">
+            <span
+              *ngFor="let day of week"
+              class="flex flex-col items-center justify-center relative py-1"
+              [class.cursor-pointer]="!!day.day"
+              (click)="onDayClick(day)">
+
+              <!-- Empty cell -->
+              <span *ngIf="!day.day" class="w-8 h-8"></span>
+
+              <!-- Day Number -->
+              <span
+                *ngIf="day.day"
+                [ngClass]="{
+                  'bg-blue-600 text-white shadow-sm font-bold': day.isSelected,
+                  'ring-2 ring-blue-500 text-blue-600 font-bold': day.isToday && !day.isSelected,
+                  'text-gray-700 font-medium hover:bg-gray-100': !day.isSelected && !day.isToday
+                }"
+                class="w-8 h-8 flex items-center justify-center rounded-full transition-colors text-[12px]">
+                {{ day.day }}
+              </span>
+
+              <!-- Dots below the day number -->
+              <span *ngIf="day.day" class="h-1 flex items-center justify-center gap-[3px] mt-[3px]">
+                <span
+                  *ngFor="let status of day.dutyStatuses"
+                  [ngClass]="{
+                    'bg-blue-500': status === 'Assigned',
+                    'bg-amber-500': status === 'Pending',
+                    'bg-emerald-500': status === 'Approved'
+                  }"
+                  class="w-[4px] h-[4px] rounded-full">
+                </span>
+              </span>
+
+            </span>
+          </ng-container>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex items-center gap-[12px] mt-[20px] pt-[12px] border-t border-gray-100 text-[11px] text-gray-500">
+          <span class="flex items-center gap-[4px]"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span> Assigned</span>
+          <span class="flex items-center gap-[4px]"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block"></span> Pending</span>
+          <span class="flex items-center gap-[4px]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Approved</span>
+        </div>
+
+      </div>
+
+      <!-- Vertical separator line visible on medium screens and up -->
+      <div class="hidden sm:block w-[1px] bg-slate-100 self-stretch"></div>
+
+      <!-- Right half: Selected Date Duties Panel -->
+      <div class="w-full sm:w-[240px] flex-shrink-0 flex flex-col">
+
+        <!-- Date Panel Header -->
+        <div class="mb-[14px]">
+          <p class="text-[13px] font-bold text-gray-800">{{ selectedDateLabel || 'Today' }}</p>
+          <p class="text-[11px] text-gray-400">{{ panelDuties.length }} duties</p>
+        </div>
+
+        <!-- Duty list card items -->
+        <div *ngIf="panelDuties.length > 0" class="flex flex-col gap-[10px] overflow-y-auto max-h-[300px] pr-[4px]">
+          <div *ngFor="let d of panelDuties"
+               class="bg-slate-50 border border-slate-100 rounded-[8px] p-[12px] hover:border-slate-200 transition-colors flex items-start justify-between gap-[8px]">
+            <div class="flex-1 min-w-0">
+              <p class="text-[12px] font-bold text-slate-800 truncate">{{ d.eventName }}</p>
+               <p class="text-[10px] text-slate-400 mt-[2px]">{{ d.eventSub }}</p>
+               <p class="text-[10px] text-slate-400 mt-[4px]">{{ d.time }}  ·  {{ d.location }}</p>
+            </div>
+            <!-- Badge -->
+            <span [ngClass]="{
+              'bg-blue-50 text-blue-600 border border-blue-100': d.status === 'Assigned',
+              'bg-amber-50 text-amber-600 border border-amber-100': d.status === 'Pending',
+              'bg-emerald-50 text-emerald-600 border border-emerald-100': d.status === 'Approved'
+            }" class="text-[9px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap mt-[1px]">
+              {{ d.status }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="panelDuties.length === 0" class="flex flex-col items-center justify-center py-[48px] text-center flex-1">
+          <svg class="w-8 h-8 text-gray-200 mb-[8px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p class="text-[12px] text-gray-400">No duties on this date</p>
+        </div>
+
+      </div>
+
+    </div>
+    <!-- end right panel -->
+
   </div>
+
+  <!-- Spacer to ensure there is a beautiful gap under Duties card and Calendar card like in Figma -->
+  <div class="h-[120px] w-full"></div>
 
 </section>

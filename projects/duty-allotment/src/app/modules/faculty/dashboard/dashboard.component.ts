@@ -5,7 +5,7 @@ export interface CalendarDay {
   date: Date | null;
   isToday: boolean;
   isSelected: boolean;
-  hasDuty: boolean; // placeholder – wire to real data later
+  dutyStatuses: string[];
 }
 
 @Component({
@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit {
   // Day-name headers (Monday first)
   readonly dayHeaders = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
-  // Duties list as shown in the screenshot
+  // Duties list updated to align with the new Figma design
   duties = [
     {
       date: '08 June',
@@ -75,15 +75,70 @@ export class DashboardComponent implements OnInit {
       status: 'Assigned'
     },
     {
-      date: '2 July',
+      date: '02 July',
       eventName: 'Exam Duty',
-      eventSub: 'invigilator',
+      eventSub: 'Invigilator',
       time: '9:00 AM',
       location: 'A 101',
       assignee: 'David Kumar',
       status: 'Assigned'
     }
   ];
+
+  get assignedDutiesCount(): string {
+    return '12';
+  }
+
+  get upcomingDutiesCount(): string {
+    return '07';
+  }
+
+  get swapRequestCount(): string {
+    return '04';
+  }
+
+  getDutyStatusesForDate(date: Date): string[] {
+    const dayNum = date.getDate();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const monthName = monthNames[date.getMonth()];
+    
+    const matchingDuties = this.duties.filter(d => {
+      const dutyDateParts = d.date.trim().split(/\s+/);
+      if (dutyDateParts.length >= 2) {
+        const dNum = parseInt(dutyDateParts[0], 10);
+        const dMonth = dutyDateParts[1].toLowerCase();
+        return dNum === dayNum && monthName.toLowerCase().startsWith(dMonth);
+      }
+      return false;
+    });
+    
+    return Array.from(new Set(matchingDuties.map(d => d.status)));
+  }
+
+  // Duties shown in the right-side panel (for selected/today date)
+  get panelDuties() {
+    if (!this.selectedDay?.date) return [];
+    const sel = this.selectedDay.date;
+    const dayNum = sel.getDate();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const monthName = monthNames[sel.getMonth()];
+    return this.duties.filter(d => {
+      const dutyDateParts = d.date.trim().split(/\s+/);
+      if (dutyDateParts.length >= 2) {
+        const dNum = parseInt(dutyDateParts[0], 10);
+        const dMonth = dutyDateParts[1].toLowerCase();
+        return dNum === dayNum && monthName.toLowerCase().startsWith(dMonth);
+      }
+      return false;
+    });
+  }
+
+  get selectedDateLabel(): string {
+    if (!this.selectedDay?.date) return '';
+    const d = this.selectedDay.date;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[d.getMonth()]} ${d.getDate()}`;
+  }
 
   ngOnInit(): void {
     this.buildCalendar();
@@ -126,7 +181,7 @@ export class DashboardComponent implements OnInit {
 
     // leading empty cells
     for (let i = 0; i < startOffset; i++) {
-      days.push({ day: null, date: null, isToday: false, isSelected: false, hasDuty: false });
+      days.push({ day: null, date: null, isToday: false, isSelected: false, dutyStatuses: [] });
     }
 
     // real days
@@ -134,7 +189,8 @@ export class DashboardComponent implements OnInit {
       const date    = new Date(year, month, d);
       const isToday = this.isSameDay(date, this.today);
       const isSelected = isToday;
-      const dayObj = { day: d, date, isToday, isSelected, hasDuty: false };
+      const dutyStatuses = this.getDutyStatusesForDate(date);
+      const dayObj = { day: d, date, isToday, isSelected, dutyStatuses };
       days.push(dayObj);
       if (isSelected) {
         this.selectedDay = dayObj;
@@ -143,7 +199,7 @@ export class DashboardComponent implements OnInit {
 
     // trailing empty cells to complete the last week
     while (days.length % 7 !== 0) {
-      days.push({ day: null, date: null, isToday: false, isSelected: false, hasDuty: false });
+      days.push({ day: null, date: null, isToday: false, isSelected: false, dutyStatuses: [] });
     }
 
     // chunk into weeks
