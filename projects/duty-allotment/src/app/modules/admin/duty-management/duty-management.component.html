@@ -11,8 +11,8 @@
 
   <!-- Dynamic Page Title based on Sub-tab -->
   <div class="mb-[20px]">
-    <h2 class="text-[18px] font-bold text-gray-950">
-      {{ activeSubTabId === 'create-new-duty' ? 'Create New Duty' : activeSubTabId === 'assign-duty' ? 'Assign Duty' : 'Swap Requests' }}
+    <h2 class="text-[18px] font-bold text-gray-955 capitalize">
+      {{ activeSubTabId === 'swap-requests' ? 'Swap Request' : activeSubTabId.replace('-', ' ').replace('-', ' ') }}
     </h2>
   </div>
 
@@ -305,7 +305,7 @@
       <div class="mt-[20px] space-y-[12px]">
         <div class="flex gap-[4px] text-[12px]">
           <span class="text-gray-400 font-medium whitespace-nowrap">Event Name :</span>
-          <span class="text-gray-800 font-semibold truncate">{{ selectedDutyDetails?.eventName || '—' }}</span>
+          <span class="text-gray-850 font-semibold truncate">{{ selectedDutyDetails?.eventName || '—' }}</span>
         </div>
         <div class="flex gap-[4px] text-[12px]">
           <span class="text-gray-400 font-medium whitespace-nowrap">Date :</span>
@@ -325,19 +325,19 @@
         </div>
       </div>
 
-      <!-- Counts Summary — three-column stacked block matching Figma -->
+      <!-- Counts Summary — three-column stacked block matching Figma (Plain layout, no colors) -->
       <div class="mt-[20px] pt-[16px] border-t border-gray-100 grid grid-cols-3 gap-[8px] text-center">
-        <div class="flex flex-col items-center bg-gray-50/50 rounded-[8px] py-[8px] border border-gray-100">
-          <span class="text-[16px] font-bold text-gray-700">{{ selectedDutyDetails ? (selectedDutyDetails.noOfFacultyRequired | number:'2.0-0') : '00' }}</span>
+        <div class="flex flex-col items-center bg-white rounded-[8px] py-[8px] border border-gray-200">
+          <span class="text-[16px] font-bold text-gray-800">{{ selectedDutyDetails ? (selectedDutyDetails.noOfFacultyRequired | number:'2.0-0') : '00' }}</span>
           <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-[2px]">Required</span>
         </div>
-        <div class="flex flex-col items-center bg-blue-50/40 rounded-[8px] py-[8px] border border-blue-50">
-          <span class="text-[16px] font-bold text-blue-600">{{ selectedFaculty.length | number:'2.0-0' }}</span>
-          <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider mt-[2px]">Assigned</span>
+        <div class="flex flex-col items-center bg-white rounded-[8px] py-[8px] border border-gray-200">
+          <span class="text-[16px] font-bold text-gray-800">{{ selectedFaculty.length | number:'2.0-0' }}</span>
+          <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-[2px]">Assigned</span>
         </div>
-        <div class="flex flex-col items-center bg-amber-50/40 rounded-[8px] py-[8px] border border-amber-50">
-          <span class="text-[16px] font-bold text-amber-600">{{ selectedDutyDetails ? (remainingFacultyCount | number:'2.0-0') : '00' }}</span>
-          <span class="text-[9px] font-bold text-amber-500 uppercase tracking-wider mt-[2px]">Remaining</span>
+        <div class="flex flex-col items-center bg-white rounded-[8px] py-[8px] border border-gray-200">
+          <span class="text-[16px] font-bold text-gray-800">{{ selectedDutyDetails ? (remainingFacultyCount | number:'2.0-0') : '00' }}</span>
+          <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-[2px]">Remaining</span>
         </div>
       </div>
     </div>
@@ -371,12 +371,58 @@
             placeholder="Search Faculty..."
             class="w-full h-full pl-[34px] pr-[12px] border border-gray-200 rounded-[6px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition duration-150"/>
         </div>
-        <button class="flex items-center gap-[6px] border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 text-[12px] font-medium px-[14px] py-[8px] h-[36px] rounded-[6px] transition-colors duration-150">
-          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 10h10M11 16h2"/>
-          </svg>
-          Filters
-        </button>
+        <!-- Filters button and dropdown -->
+        <div class="relative">
+          <button 
+            (click)="showFilterMenu = !showFilterMenu"
+            class="flex items-center gap-[6px] border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 text-[12px] font-medium px-[14px] py-[8px] h-[36px] rounded-[6px] transition-colors duration-150 cursor-pointer focus:outline-none">
+            <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 10h10M11 16h2"/>
+            </svg>
+            Filters
+          </button>
+
+          <!-- Filters Dropdown Menu -->
+          <div 
+            *ngIf="showFilterMenu"
+            class="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg z-[999] flex flex-col p-4 shadow-xl min-w-[240px]">
+            
+            <div class="mb-3 flex flex-col">
+              <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Department</label>
+              <select 
+                [(ngModel)]="filterDepartment"
+                (change)="onFacultySearch()"
+                class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">All Departments</option>
+                <option *ngFor="let dept of departmentsList" [value]="dept">{{ dept }}</option>
+              </select>
+            </div>
+
+            <div class="mb-4 flex flex-col">
+              <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Status</label>
+              <select 
+                [(ngModel)]="filterStatus"
+                (change)="onFacultySearch()"
+                class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">All Statuses</option>
+                <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+              </select>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-gray-100 pt-2.5">
+              <button 
+                (click)="clearAllFacultyFilters()"
+                class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-transparent border-0 cursor-pointer">
+                Clear All
+              </button>
+              <button 
+                (click)="showFilterMenu = false"
+                class="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-transparent border-0 cursor-pointer">
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Faculty Table -->
@@ -398,7 +444,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let fac of pagedFaculty"
-              class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/50 transition-colors duration-100">
+              class="border-b border-gray-55 last:border-b-0 hover:bg-gray-50/50 transition-colors duration-100">
               <td class="pl-[16px] pr-[8px] py-[12px]">
                 <input type="checkbox" [(ngModel)]="fac.selected"
                   class="w-[14px] h-[14px] rounded border-gray-300 accent-blue-600 cursor-pointer"/>
@@ -409,8 +455,9 @@
               <td class="px-[12px] py-[12px] text-[12px] text-gray-500 whitespace-nowrap">{{ fac.department }}</td>
               <td class="px-[12px] py-[12px] text-[12px] text-gray-500 whitespace-nowrap">{{ fac.designation }}</td>
               <td class="pl-[12px] pr-[16px] py-[12px] whitespace-nowrap">
+                <!-- Status badge - Active is blue in Figma -->
                 <span [ngClass]="{
-                  'bg-emerald-50 text-emerald-600 border-emerald-100': fac.status === 'Active',
+                  'bg-blue-50 text-blue-600 border-blue-100': fac.status === 'Active',
                   'bg-amber-50 text-amber-600 border-amber-100': fac.status === 'On Leave',
                   'bg-rose-50 text-rose-600 border-rose-100': fac.status === 'Inactive'
                 }" class="text-[11px] font-bold px-[10px] py-[4px] rounded-[6px] border tracking-wide inline-block">
@@ -473,16 +520,18 @@
     </div>
 
     <!-- ── Panel 3: Selected Faculty (Right) ── -->
-    <div class="w-full lg:w-[280px] flex-shrink-0 bg-white border border-gray-100 rounded-[12px] shadow-sm p-[20px] flex flex-col min-h-[420px]">
+    <div class="w-full lg:w-[280px] flex-shrink-0 bg-[#fafafd] rounded-[12px] p-[20px] flex flex-col min-h-[420px] border border-transparent">
       <h3 class="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-[12px] mb-[16px]">Selected Faculty</h3>
 
-      <!-- Selected List — plain name + × matching Figma -->
+      <!-- Selected List — rounded white card bubbles matching Figma -->
       <div class="flex-grow overflow-y-auto space-y-[2px] mb-[20px]">
         <div *ngFor="let fac of selectedFaculty"
-          class="flex items-center justify-between py-[10px] border-b border-gray-100 last:border-b-0 hover:bg-gray-50/60 px-[4px] transition-colors duration-100">
-          <span class="text-[13px] font-medium text-gray-800">{{ fac.facultyName }}</span>
+          class="flex items-center justify-between bg-white border border-gray-150 rounded-[8px] p-[12px] shadow-sm mb-[10px] hover:border-blue-300 transition-colors duration-150">
+          <span class="text-[13px] font-semibold text-gray-750">{{ fac.facultyName }}</span>
           <button (click)="removeSelectedFaculty(fac)"
-            class="text-gray-400 hover:text-red-500 font-bold text-[18px] leading-none transition-colors duration-150 ml-[8px] flex-shrink-0">&times;</button>
+            class="text-gray-450 hover:text-red-500 font-bold text-[14px] leading-none transition-colors duration-150 cursor-pointer border-0 bg-transparent flex items-center justify-center p-1">
+            &times;
+          </button>
         </div>
         <div *ngIf="selectedFaculty.length === 0" class="text-center py-[48px] text-[12px] text-gray-400 font-medium">
           No faculty selected.<br/>Tick checkboxes in the<br/>Select Faculty panel.
@@ -490,13 +539,13 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex items-center justify-end gap-[10px] border-t border-gray-100 pt-[14px] mt-auto">
+      <div class="flex items-center justify-end gap-[10px] pt-[14px] mt-auto">
         <button (click)="clearSelectedFaculty()"
-          class="px-[16px] py-[8px] text-[12px] font-medium text-gray-500 border border-gray-200 rounded-[6px] bg-white hover:bg-gray-50 transition-colors duration-150">
+          class="px-[16px] py-[8px] text-[12px] font-medium text-gray-500 border border-gray-200 rounded-[6px] bg-white hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
           Cancel
         </button>
         <button (click)="onAssignDuty()"
-          class="px-[20px] py-[8px] text-[12px] font-bold text-white bg-[#005faa] hover:bg-[#004b87] active:bg-[#003d70] rounded-[6px] transition-colors duration-150 shadow-sm focus:outline-none">
+          class="px-[20px] py-[8px] text-[12px] font-bold text-white bg-[#005faa] hover:bg-[#004b87] active:bg-[#003d70] rounded-[6px] transition-colors duration-150 shadow-sm focus:outline-none cursor-pointer">
           Assign
         </button>
       </div>

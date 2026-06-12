@@ -182,17 +182,28 @@ export class DutyManagementComponent implements OnInit {
   }
 
   // ── Duty Table (Create New Duty) ──────────────────────────────────────────────
-  allDuties: DutyRecord[] = Array.from({ length: 25 }, (_, i) => ({
-    dutyType:            'Exam Duty',
-    eventName:           'End Sem Exam',
-    date:                'May 25, 2026',
-    time:                '9:00 AM - 11:00 AM',
-    venue:               'Block A - 101',
-    department:          'Computer Science',
-    noOfFacultyRequired: 3,
-    status:              'Pending' as const,
-    selected:            false
-  }));
+  allDuties: DutyRecord[] = Array.from({ length: 25 }, (_, i) => {
+    const types = ['Exam Duty', 'Invigilation', 'Practical Duty', 'Hall Duty'];
+    const events = ['End Sem Exam', 'Internal Assessment', 'Lab Exam', 'Semester Exam'];
+    const dates = ['May 25, 2026', 'May 26, 2026', 'May 27, 2026', 'May 28, 2026'];
+    const times = ['9:00 AM - 11:00 AM', '10:00 AM - 12:00 PM', '9:00 AM - 12:00 PM', '2:00 PM - 5:00 PM'];
+    const venues = ['Block A - 101', 'Block A - 102', 'Lab A - 01', 'Block B - 201'];
+    const depts = ['Computer Science', 'Mathematics', 'Physics', 'Chemistry'];
+    const reqs = [3, 2, 4, 3];
+    
+    const idx = i % 4;
+    return {
+      dutyType:            types[idx],
+      eventName:           events[idx],
+      date:                dates[idx],
+      time:                times[idx],
+      venue:               venues[idx],
+      department:          depts[idx],
+      noOfFacultyRequired: reqs[idx],
+      status:              'Pending' as const,
+      selected:            false
+    };
+  });
 
   filteredDuties: DutyRecord[] = [];
 
@@ -240,7 +251,8 @@ export class DutyManagementComponent implements OnInit {
   onAssignDutyTypeChange(items: any[]): void {
     this.selectedAssignDutyType = items;
     if (items.length > 0) {
-      this.selectedDutyDetails = this.allDuties.find(d => d.dutyType === items[0].name && d.status === 'Pending') || null;
+      this.selectedDutyDetails = this.allDuties.find(d => d.dutyType === items[0].name && d.status === 'Pending') || 
+                                 this.allDuties.find(d => d.dutyType === items[0].name) || null;
     } else {
       this.selectedDutyDetails = null;
     }
@@ -290,6 +302,13 @@ export class DutyManagementComponent implements OnInit {
     { empId: 'EMP 019', facultyName: 'Dr. Alice',           date: 'May 25, 2026', department: 'Computer Science', designation: 'Associate Professor', status: 'On Leave', selected: false }
   ];
 
+  // Faculty Filtering States
+  showFilterMenu = false;
+  filterDepartment = '';
+  filterStatus = '';
+  departmentsList = ['Computer Science', 'Mathematics', 'Physics', 'Chemistry'];
+  statusList = ['Active', 'On Leave', 'Inactive'];
+
   facultySearchQuery  = '';
   filteredFaculty: FacultyRecord[] = [];
   facultyRowsPerPage  = 10;
@@ -297,15 +316,25 @@ export class DutyManagementComponent implements OnInit {
 
   onFacultySearch(): void {
     const q = this.facultySearchQuery.toLowerCase().trim();
-    this.filteredFaculty = q
-      ? this.allFaculty.filter(f =>
-          f.empId.toLowerCase().includes(q) ||
+    this.filteredFaculty = this.allFaculty.filter(f => {
+      const matchesSearch = q
+        ? f.empId.toLowerCase().includes(q) ||
           f.facultyName.toLowerCase().includes(q) ||
           f.department.toLowerCase().includes(q) ||
           f.designation.toLowerCase().includes(q) ||
-          f.status.toLowerCase().includes(q))
-      : [...this.allFaculty];
+          f.status.toLowerCase().includes(q)
+        : true;
+      const matchesDept = this.filterDepartment ? f.department === this.filterDepartment : true;
+      const matchesStatus = this.filterStatus ? f.status === this.filterStatus : true;
+      return matchesSearch && matchesDept && matchesStatus;
+    });
     this.facultyCurrentPage = 1;
+  }
+
+  clearAllFacultyFilters(): void {
+    this.filterDepartment = '';
+    this.filterStatus = '';
+    this.onFacultySearch();
   }
 
   get totalFacultyItems():  number { return this.filteredFaculty.length; }
