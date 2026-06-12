@@ -1,114 +1,227 @@
-<section class="min-h-full bg-[#fafafd] px-[24px] pt-[20px] pb-[80px] font-sans">
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[20px] pb-[80px] font-sans" (click)="closeAllMenus()">
 
-  <!-- Outer container constrained to a maximum width to match Figma -->
-  <div class="max-w-[730px] w-full">
+  <!-- Outer container constrained to a maximum width to match Figma Faculty Management -->
+  <div class="max-w-[1200px] w-full">
 
-    <!-- Search, Filter and Actions Toolbar -->
-    <div class="flex items-center justify-between gap-4 mb-[16px]">
+    <!-- Table Card Container containing Toolbar and Table -->
+    <div class="bg-white border border-gray-200 rounded-[12px] shadow-sm overflow-hidden mb-[16px] w-full" (click)="$event.stopPropagation()">
 
-      <!-- Search Bar (Left) -->
-      <div class="relative w-[180px] sm:w-[220px]">
-        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <!-- Magnifying Glass Icon -->
-          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </span>
-        <input
-          type="text"
-          [(ngModel)]="searchQuery"
-          (ngModelChange)="onSearch()"
-          placeholder="Search Faculty..."
-          class="w-full pl-8 pr-3 py-[7px] text-[11px] text-gray-700 bg-white border border-gray-200 rounded-[6px] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm"
-        />
-      </div>
+      <!-- Search, Filter and Actions Toolbar INSIDE the Card -->
+      <div class="flex items-center justify-between gap-4 p-[24px] border-b border-gray-100 bg-white">
 
-      <!-- Filters & Actions (Right) -->
-      <div class="flex items-center gap-[10px] ml-auto">
-
-        <!-- Timeframe Pills -->
-        <div class="flex items-center gap-[10px] text-[10px] font-bold text-gray-400 mr-[8px]">
-          <button
-            *ngFor="let tf of timeframes"
-            (click)="setTimeframe(tf)"
-            [ngClass]="{
-              'text-[#005faa] border-b-[2px] border-[#005faa] pb-[1px] font-extrabold': tf === activeTimeframe,
-              'hover:text-gray-600': tf !== activeTimeframe
-            }"
-            class="transition-all uppercase py-[2px] px-[2px] focus:outline-none"
-          >
-            {{ tf }}
-          </button>
+        <!-- Search Bar (Left) -->
+        <div class="relative w-[280px]">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <!-- Magnifying Glass Icon -->
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearch()"
+            placeholder="Search Faculty..."
+            class="w-full pl-9 pr-3 py-[8px] text-[12px] text-gray-700 bg-white border border-gray-200 rounded-[6px] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm"
+          />
         </div>
 
-        <!-- Date Range Button -->
-        <button class="flex items-center gap-1.5 px-[10px] py-[7px] text-[11px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-[6px] hover:bg-gray-50 active:bg-gray-100 transition shadow-sm focus:outline-none">
-          <!-- Calendar Icon -->
-          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span>Date Range</span>
-        </button>
+        <!-- Filters & Actions (Right) -->
+        <div class="flex items-center gap-[12px] ml-auto">
 
-        <!-- Filters Button -->
-        <button class="flex items-center gap-1.5 px-[10px] py-[7px] text-[11px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-[6px] hover:bg-gray-50 active:bg-gray-100 transition shadow-sm focus:outline-none">
-          <!-- Filter Icon -->
-          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 10h10M11 16h2" />
-          </svg>
-          <span>Filters</span>
-        </button>
+          <!-- Timeframe Pills -->
+          <div class="flex items-center gap-[12px] text-[11px] font-bold text-gray-400 mr-[12px]">
+            <button
+              *ngFor="let tf of timeframes"
+              (click)="setTimeframe(tf)"
+              [ngClass]="{
+                'text-[#005faa] border-b-[2px] border-[#005faa] pb-[2px] font-extrabold': tf === activeTimeframe,
+                'hover:text-gray-600': tf !== activeTimeframe
+              }"
+              class="transition-all uppercase py-[2px] px-[2px] focus:outline-none cursor-pointer border-0 bg-transparent"
+            >
+              {{ tf }}
+            </button>
+          </div>
 
-        <!-- Export Button -->
-        <button (click)="exportRecords()" class="flex items-center gap-1.5 px-[12px] py-[7px] text-[11px] font-semibold text-white bg-[#005faa] hover:bg-[#004b87] active:bg-[#003d70] rounded-[6px] transition shadow-sm focus:outline-none">
-          <!-- Export/Download Icon -->
-          <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          <span>Export</span>
-        </button>
+          <!-- Date Range Button & Dropdown -->
+          <div class="relative">
+            <button 
+              (click)="toggleDatePanel(); $event.stopPropagation()"
+              class="flex items-center gap-1.5 px-[12px] py-[8px] text-[12px] font-semibold rounded-[6px] bg-white border transition shadow-sm focus:outline-none cursor-pointer"
+              [ngClass]="(dateFrom || dateTo) ? 'border-blue-400 text-blue-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50 active:bg-gray-100'">
+              <!-- Calendar Icon -->
+              <svg class="w-3.5 h-3.5" [ngClass]="(dateFrom || dateTo) ? 'text-blue-500' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Date Range</span>
+              <span *ngIf="dateFrom || dateTo" class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            </button>
 
+            <!-- Date Dropdown Menu -->
+            <div 
+              *ngIf="showDatePanel"
+              class="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg z-[999] flex flex-col p-4 shadow-xl min-w-[240px]">
+              <h4 class="text-[12px] font-bold text-gray-800 mb-3">Custom Date Range</h4>
+              
+              <div class="mb-3 flex flex-col">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">From</label>
+                <input 
+                  type="date"
+                  [(ngModel)]="dateFrom"
+                  class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"/>
+              </div>
+
+              <div class="mb-4 flex flex-col">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">To</label>
+                <input 
+                  type="date"
+                  [(ngModel)]="dateTo"
+                  class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"/>
+              </div>
+
+              <div class="flex items-center justify-between border-t border-gray-100 pt-2.5">
+                <button 
+                  (click)="clearDateRange()"
+                  class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-transparent border-0 cursor-pointer">
+                  Clear
+                </button>
+                <button 
+                  (click)="applyDateRange()"
+                  class="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-transparent border-0 cursor-pointer">
+                  Apply
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters Button & Dropdown -->
+          <div class="relative">
+            <button 
+              (click)="toggleFilterPanel(); $event.stopPropagation()"
+              class="flex items-center gap-1.5 px-[12px] py-[8px] text-[12px] font-semibold rounded-[6px] bg-white border transition shadow-sm focus:outline-none cursor-pointer"
+              [ngClass]="(filterStatus || filterDepartment || filterDutyType) ? 'border-blue-400 text-blue-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50 active:bg-gray-100'">
+              <!-- Filter Icon -->
+              <svg class="w-3.5 h-3.5" [ngClass]="(filterStatus || filterDepartment || filterDutyType) ? 'text-blue-500' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 10h10M11 16h2" />
+              </svg>
+              <span>Filters</span>
+              <span *ngIf="filterStatus || filterDepartment || filterDutyType" class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            </button>
+
+            <!-- Filters Dropdown Menu -->
+            <div 
+              *ngIf="showFilterPanel"
+              class="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg z-[999] flex flex-col p-4 shadow-xl min-w-[260px]">
+              
+              <!-- Department -->
+              <div class="mb-3 flex flex-col">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Department</label>
+                <select 
+                  [(ngModel)]="filterDepartment"
+                  class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <option value="">All Departments</option>
+                  <option *ngFor="let dept of departmentsList" [value]="dept">{{ dept }}</option>
+                </select>
+              </div>
+
+              <!-- Duty Type -->
+              <div class="mb-3 flex flex-col">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Duty Type</label>
+                <select 
+                  [(ngModel)]="filterDutyType"
+                  class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <option value="">All Types</option>
+                  <option *ngFor="let dt of dutyTypesList" [value]="dt">{{ dt }}</option>
+                </select>
+              </div>
+
+              <!-- Status -->
+              <div class="mb-4 flex flex-col">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Status</label>
+                <select 
+                  [(ngModel)]="filterStatus"
+                  class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <option value="">All Statuses</option>
+                  <option *ngFor="let st of statusList" [value]="st">{{ st }}</option>
+                </select>
+              </div>
+
+              <div class="flex items-center justify-between border-t border-gray-100 pt-2.5">
+                <button 
+                  (click)="clearDropdownFilters()"
+                  class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-transparent border-0 cursor-pointer">
+                  Clear
+                </button>
+                <button 
+                  (click)="applyDropdownFilters()"
+                  class="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-transparent border-0 cursor-pointer">
+                  Apply
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Button -->
+          <button (click)="exportRecords(); $event.stopPropagation()" class="flex items-center gap-1.5 px-[14px] py-[8px] text-[12px] font-semibold text-white bg-[#005faa] hover:bg-[#004b87] active:bg-[#003d70] rounded-[6px] transition shadow-sm focus:outline-none cursor-pointer border-0">
+            <!-- Export/Download Icon -->
+            <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Export</span>
+          </button>
+
+        </div>
       </div>
-    </div>
 
-    <!-- Table Card -->
-    <div class="bg-white border border-gray-200 rounded-[8px] shadow-sm overflow-hidden mb-[16px]">
+      <!-- Table -->
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-white border-b border-gray-200">
-              <th class="px-[20px] py-[12px] text-[9px] font-bold text-gray-400 uppercase tracking-wider">Faculty Name</th>
-              <th class="px-[20px] py-[12px] text-[9px] font-bold text-gray-400 uppercase tracking-wider">Duty Type</th>
-              <th class="px-[20px] py-[12px] text-[9px] font-bold text-gray-400 uppercase tracking-wider">Date</th>
-              <th class="px-[20px] py-[12px] text-[9px] font-bold text-gray-400 uppercase tracking-wider">Event</th>
-              <th class="px-[20px] py-[12px] text-[9px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
+            <tr class="bg-gray-50/60 border-b border-gray-100 text-gray-400 text-[10px] font-bold uppercase tracking-wider">
+              <th class="px-[24px] py-[12px]">Faculty Name</th>
+              <th class="px-[24px] py-[12px]">Duty Type</th>
+              <th class="px-[24px] py-[12px]">Date</th>
+              <th class="px-[24px] py-[12px]">Event</th>
+              <th class="px-[24px] py-[12px]">Venue</th>
+              <th class="px-[24px] py-[12px]">Department</th>
+              <th class="px-[24px] py-[12px]">Status</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <tr *ngFor="let record of pagedRecords" class="hover:bg-gray-50/40 transition-colors duration-100">
+            <tr *ngFor="let record of pagedRecords" class="hover:bg-gray-50/30 transition-colors duration-100">
               <!-- Faculty Name -->
-              <td class="px-[20px] py-[14px] text-[11px] font-semibold text-gray-700 whitespace-nowrap">
+              <td class="px-[24px] py-[16px] text-[12px] font-semibold text-gray-700 whitespace-nowrap">
                 {{ record.facultyName }}
               </td>
               <!-- Duty Type -->
-              <td class="px-[20px] py-[14px] text-[11px] font-semibold text-gray-700 whitespace-nowrap">
+              <td class="px-[24px] py-[16px] text-[12px] text-gray-700 whitespace-nowrap">
                 {{ record.dutyType }}
               </td>
               <!-- Date -->
-              <td class="px-[20px] py-[14px] text-[11px] font-semibold text-gray-700 whitespace-nowrap">
+              <td class="px-[24px] py-[16px] text-[12px] text-gray-500 whitespace-nowrap">
                 {{ record.date }}
               </td>
               <!-- Event -->
-              <td class="px-[20px] py-[14px] text-[11px] font-semibold text-gray-700 whitespace-nowrap">
+              <td class="px-[24px] py-[16px] text-[12px] font-medium text-gray-700 whitespace-nowrap">
                 {{ record.event }}
               </td>
+              <!-- Venue -->
+              <td class="px-[24px] py-[16px] text-[12px] text-gray-700 whitespace-nowrap">
+                {{ record.venue }}
+              </td>
+              <!-- Department -->
+              <td class="px-[24px] py-[16px] text-[12px] text-gray-700 whitespace-nowrap">
+                {{ record.department }}
+              </td>
               <!-- Status Badge -->
-              <td class="px-[20px] py-[14px] whitespace-nowrap">
+              <td class="px-[24px] py-[16px] whitespace-nowrap">
                 <span [ngClass]="{
-                  'text-[#005faa] bg-[#005faa]/10': record.status === 'Completed',
-                  'text-[#ef4444] bg-[#ef4444]/10': record.status === 'Cancelled',
-                  'text-[#d97706] bg-[#d97706]/10': record.status === 'Pending' || record.status === 'Assigned'
-                }" class="inline-flex items-center justify-center rounded-[4px] px-[10px] py-[4px] text-[10px] font-bold min-w-[76px] text-center">
+                  'text-emerald-600 bg-emerald-50 border-emerald-100': record.status === 'Completed',
+                  'text-rose-600 bg-rose-50 border-rose-100': record.status === 'Cancelled',
+                  'text-amber-600 bg-amber-50 border-amber-100': record.status === 'Pending',
+                  'text-blue-600 bg-blue-50 border-blue-100': record.status === 'Assigned'
+                }" class="inline-flex items-center justify-center rounded-[6px] border px-[10px] py-[4px] text-[11px] font-bold tracking-wide min-w-[80px] text-center">
                   {{ record.status }}
                 </span>
               </td>
@@ -116,7 +229,7 @@
 
             <!-- Empty State -->
             <tr *ngIf="pagedRecords.length === 0">
-              <td colspan="5" class="px-[20px] py-[40px] text-center text-[12px] text-gray-400 font-medium">
+              <td colspan="7" class="px-[24px] py-[40px] text-center text-[13px] text-gray-400 font-medium">
                 No duty records found.
               </td>
             </tr>
@@ -125,40 +238,40 @@
       </div>
 
       <!-- Pagination Footer -->
-      <div class="px-[20px] py-[12px] border-t border-gray-200 flex items-center justify-between flex-wrap gap-4 bg-white">
+      <div class="px-[24px] py-[16px] border-t border-gray-100 flex items-center justify-between flex-wrap gap-4 bg-white">
 
         <!-- Rows per page selection -->
-        <div class="flex items-center gap-[6px] text-[11px] text-gray-400 font-medium">
+        <div class="flex items-center gap-[8px] text-[12px] text-gray-500 font-medium">
           <span>Rows per page</span>
           <div class="relative">
             <select
               [(ngModel)]="rowsPerPage"
               (ngModelChange)="onRowsPerPageChange()"
-              class="appearance-none border border-gray-200 bg-white rounded-[4px] pl-[6px] pr-[18px] py-[2px] text-[11px] font-semibold text-gray-700 cursor-pointer focus:outline-none"
+              class="appearance-none border border-gray-200 bg-white rounded-[6px] pl-[12px] pr-[28px] py-[5px] text-[12px] font-semibold text-gray-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
             >
               <option [value]="5">5</option>
               <option [value]="10">10</option>
               <option [value]="20">20</option>
               <option [value]="50">50</option>
             </select>
-            <svg class="pointer-events-none absolute right-[5px] top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg class="pointer-events-none absolute right-[8px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
             </svg>
           </div>
         </div>
 
         <!-- Range + Pagination Controls -->
-        <div class="flex items-center gap-[14px] text-[11px] text-gray-400 font-medium">
+        <div class="flex items-center gap-[16px] text-[12px] text-gray-500 font-medium">
           <span>{{ rangeStart }} - {{ rangeEnd }} of {{ totalItems }}</span>
 
-          <div class="flex items-center gap-[8px]">
+          <div class="flex items-center gap-[6px]">
             <!-- Prev Arrow -->
             <button
               (click)="prevPage()"
               [disabled]="currentPage === 1"
-              class="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed p-[2px] transition-colors focus:outline-none"
+              class="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed p-[4px] transition-colors focus:outline-none cursor-pointer border-0 bg-transparent"
             >
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -169,10 +282,10 @@
                 *ngFor="let p of visiblePages"
                 (click)="goToPage(p)"
                 [ngClass]="{
-                  'bg-[#005faa] text-white w-[22px] h-[22px] flex items-center justify-center rounded-full font-bold': p === currentPage,
-                  'text-gray-500 hover:text-gray-800 font-semibold px-[4px] py-[2px]': p !== currentPage
+                  'bg-blue-600 text-white w-7 h-7 flex items-center justify-center rounded-full font-bold shadow-sm': p === currentPage,
+                  'text-gray-500 hover:text-blue-600 font-semibold px-2 py-1 bg-transparent border-0': p !== currentPage
                 }"
-                class="text-[11px] transition-all focus:outline-none"
+                class="text-[12px] transition-all focus:outline-none cursor-pointer"
               >
                 {{ p }}
               </button>
@@ -182,9 +295,9 @@
             <button
               (click)="nextPage()"
               [disabled]="currentPage === totalPages"
-              class="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed p-[2px] transition-colors focus:outline-none"
+              class="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed p-[4px] transition-colors focus:outline-none cursor-pointer border-0 bg-transparent"
             >
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </button>

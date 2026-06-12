@@ -1,11 +1,11 @@
-<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]">
+<section class="min-h-full bg-[#fafafd] px-[24px] pt-[28px] pb-[80px]" (click)="closeAllMenus()">
 
   <!-- Page Header -->
-  <div class="flex items-center justify-between mb-[20px]">
-    <h2 class="text-[14px] font-semibold text-gray-700">Faculty Management</h2>
+  <div class="flex items-center justify-between mb-[20px] w-full max-w-[1200px]" (click)="$event.stopPropagation()">
+    <h2 class="text-[15px] font-bold text-gray-900">Faculty Management</h2>
     <button
       (click)="openAddFaculty()"
-      class="flex items-center gap-[6px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-[13px] font-semibold px-[16px] py-[8px] rounded-[6px] transition-colors duration-150 shadow-sm">
+      class="flex items-center gap-[6px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-[13px] font-semibold px-[16px] py-[8px] rounded-[6px] transition-colors duration-150 shadow-sm cursor-pointer focus:outline-none">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
       </svg>
@@ -13,53 +13,100 @@
     </button>
   </div>
 
-  <!-- Search + Filter Bar -->
-  <div class="flex items-center justify-between gap-[12px] mb-[16px]">
-    <!-- Search -->
-    <div class="relative flex-grow max-w-[380px]">
-      <svg class="absolute left-[10px] top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-gray-400 pointer-events-none"
-        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-        <circle cx="11" cy="11" r="7"/>
-        <path stroke-linecap="round" d="M20 20l-3-3"/>
-      </svg>
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        (ngModelChange)="onSearch()"
-        placeholder="Search Faculty..."
-        class="w-full pl-[32px] pr-[12px] py-[8px] border border-gray-200 rounded-[6px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"/>
+  <!-- Table Card Wrapper - contains both Search+Filter Bar and Table -->
+  <div class="bg-white border border-gray-200 rounded-[12px] shadow-sm overflow-hidden w-full max-w-[1200px]" (click)="$event.stopPropagation()">
+    
+    <!-- Search + Filter Bar INSIDE the Card -->
+    <div class="flex items-center justify-between gap-[12px] p-[24px] border-b border-gray-100 bg-white">
+      <!-- Search -->
+      <div class="relative flex-grow max-w-[380px]">
+        <svg class="absolute left-[10px] top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-gray-400 pointer-events-none"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="7"/>
+          <path stroke-linecap="round" d="M20 20l-3-3"/>
+        </svg>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearch()"
+          placeholder="Search Faculty..."
+          class="w-full pl-[32px] pr-[12px] py-[8px] border border-gray-200 rounded-[6px] text-[12px] text-gray-700 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"/>
+      </div>
+
+      <!-- Filters button and dropdown -->
+      <div class="relative">
+        <button 
+          (click)="showFilterMenu = !showFilterMenu"
+          class="flex items-center gap-[6px] border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 text-[12px] font-medium px-[14px] py-[8px] rounded-[6px] transition-colors duration-150 cursor-pointer focus:outline-none">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 10h10M11 16h2"/>
+          </svg>
+          Filters
+        </button>
+
+        <!-- Filters Dropdown Menu -->
+        <div 
+          *ngIf="showFilterMenu"
+          class="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg z-[999] flex flex-col p-4 shadow-xl min-w-[240px]">
+          
+          <div class="mb-3 flex flex-col">
+            <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Department</label>
+            <select 
+              [(ngModel)]="filterDepartment"
+              (change)="onSearch()"
+              class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="">All Departments</option>
+              <option *ngFor="let dept of departmentsList" [value]="dept">{{ dept }}</option>
+            </select>
+          </div>
+
+          <div class="mb-4 flex flex-col">
+            <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Status</label>
+            <select 
+              [(ngModel)]="filterStatus"
+              (change)="onSearch()"
+              class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="">All Statuses</option>
+              <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between border-t border-gray-100 pt-2.5">
+            <button 
+              (click)="clearAllFilters()"
+              class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-transparent border-0 cursor-pointer">
+              Clear All
+            </button>
+            <button 
+              (click)="showFilterMenu = false"
+              class="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-transparent border-0 cursor-pointer">
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Filters button -->
-    <button class="flex items-center gap-[6px] border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 text-[12px] font-medium px-[14px] py-[8px] rounded-[6px] transition-colors duration-150">
-      <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 10h10M11 16h2"/>
-      </svg>
-      Filters
-    </button>
-  </div>
-
-  <!-- Table Card -->
-  <div class="bg-white border border-gray-200 rounded-[8px] shadow-sm overflow-hidden">
+    <!-- Table -->
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <!-- Head -->
         <thead>
-          <tr class="border-b border-gray-100 bg-gray-50/50">
+          <tr class="border-b border-gray-100 bg-gray-50/60 text-gray-400 text-[10px] font-bold uppercase tracking-wider">
             <!-- Checkbox all -->
-            <th class="pl-[20px] pr-[8px] py-[11px] w-[40px]">
+            <th class="pl-[24px] pr-[8px] py-[12px] w-[40px]">
               <input
                 type="checkbox"
                 [checked]="allSelected"
                 (change)="toggleSelectAll($event)"
                 class="w-[14px] h-[14px] rounded border-gray-300 accent-blue-600 cursor-pointer"/>
             </th>
-            <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Emp ID</th>
-            <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Faculty Name</th>
-            <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Department</th>
-            <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Designation</th>
-            <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Status</th>
-            <th class="px-[12px] py-[11px] text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap text-center">Actions</th>
+            <th class="px-[12px] py-[12px] whitespace-nowrap">Emp ID</th>
+            <th class="px-[12px] py-[12px] whitespace-nowrap">Faculty Name</th>
+            <th class="px-[12px] py-[12px] whitespace-nowrap">Department</th>
+            <th class="px-[12px] py-[12px] whitespace-nowrap">Designation</th>
+            <th class="px-[12px] py-[12px] whitespace-nowrap">Status</th>
+            <th class="px-[12px] py-[12px] whitespace-nowrap text-right pr-[24px]">Actions</th>
           </tr>
         </thead>
 
@@ -67,10 +114,10 @@
         <tbody>
           <tr
             *ngFor="let faculty of pagedFaculty"
-            class="border-b border-gray-50 last:border-b-0 hover:bg-gray-50/40 transition-colors duration-100">
+            class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors duration-100">
 
             <!-- Checkbox -->
-            <td class="pl-[20px] pr-[8px] py-[12px]">
+            <td class="pl-[24px] pr-[8px] py-[16px]">
               <input
                 type="checkbox"
                 [(ngModel)]="faculty.selected"
@@ -78,60 +125,71 @@
             </td>
 
             <!-- Emp ID -->
-            <td class="px-[12px] py-[12px] text-[12px] font-medium text-gray-700 whitespace-nowrap">{{ faculty.empId }}</td>
+            <td class="px-[12px] py-[16px] text-[12px] font-semibold text-gray-700 whitespace-nowrap">{{ faculty.empId }}</td>
 
             <!-- Faculty Name -->
-            <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ faculty.facultyName }}</td>
+            <td class="px-[12px] py-[16px] text-[12px] font-medium text-gray-700 whitespace-nowrap">{{ faculty.facultyName }}</td>
 
             <!-- Department -->
-            <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ faculty.department }}</td>
+            <td class="px-[12px] py-[16px] text-[12px] text-gray-700 whitespace-nowrap">{{ faculty.department }}</td>
 
             <!-- Designation -->
-            <td class="px-[12px] py-[12px] text-[12px] text-gray-700 whitespace-nowrap">{{ faculty.designation }}</td>
+            <td class="px-[12px] py-[16px] text-[12px] text-gray-700 whitespace-nowrap">{{ faculty.designation }}</td>
 
             <!-- Status badge -->
-            <td class="px-[12px] py-[12px] whitespace-nowrap">
+            <td class="px-[12px] py-[16px] whitespace-nowrap">
               <span [ngClass]="{
-                'text-[#10b981]': faculty.status === 'Active',
-                'text-[#f59e0b]': faculty.status === 'On Leave',
-                'text-[#ef4444]': faculty.status === 'Inactive'
-              }" class="text-[12px] font-semibold">
+                'bg-emerald-50 text-emerald-600 border-emerald-100': faculty.status === 'Active',
+                'bg-amber-50 text-amber-600 border-amber-100': faculty.status === 'On Leave',
+                'bg-rose-50 text-rose-600 border-rose-100': faculty.status === 'Inactive'
+              }" class="text-[11px] font-bold px-[10px] py-[4px] rounded-[6px] border tracking-wide inline-block">
                 {{ faculty.status }}
               </span>
             </td>
 
-            <!-- Actions -->
-            <td class="px-[12px] py-[12px] whitespace-nowrap">
-              <div class="flex items-center justify-center gap-[10px]">
-                <!-- View -->
-                <button title="View" (click)="viewFaculty(faculty)" class="text-gray-400 hover:text-blue-500 transition-colors">
-                  <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            <!-- Actions: three-dot reveals inline icons -->
+            <td class="py-[16px] px-[16px] text-right whitespace-nowrap pr-[24px]" (click)="$event.stopPropagation()">
+              <div class="flex items-center justify-end gap-[6px]">
+
+                <!-- Inline icons: visible only when this row's menu is open -->
+                <ng-container *ngIf="openMenuId === faculty.empId">
+
+                  <!-- View -->
+                  <button (click)="viewFaculty(faculty)" title="View Details"
+                    class="w-[28px] h-[28px] flex items-center justify-center rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors focus:outline-none cursor-pointer border-0 bg-transparent">
+                    <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+
+                  <!-- Edit -->
+                  <button (click)="editFaculty(faculty)" title="Edit"
+                    class="w-[28px] h-[28px] flex items-center justify-center rounded-full text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors focus:outline-none cursor-pointer border-0 bg-transparent">
+                    <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+
+                  <!-- Delete -->
+                  <button (click)="deleteFaculty(faculty)" title="Delete"
+                    class="w-[28px] h-[28px] flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors focus:outline-none cursor-pointer border-0 bg-transparent">
+                    <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+
+                </ng-container>
+
+                <!-- Three-dot toggle button — always visible -->
+                <button (click)="toggleRowMenu(faculty.empId, $event)" title="Actions"
+                  class="w-[28px] h-[28px] flex items-center justify-center rounded-full transition-colors focus:outline-none cursor-pointer border-0 bg-transparent"
+                  [ngClass]="openMenuId === faculty.empId ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'">
+                  <svg class="w-[14px] h-[14px]" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
                   </svg>
                 </button>
-                <!-- Edit -->
-                <button title="Edit" (click)="editFaculty(faculty)" class="text-gray-400 hover:text-green-500 transition-colors">
-                  <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                  </svg>
-                </button>
-                <!-- Delete -->
-                <button title="Delete" (click)="deleteFaculty(faculty)" class="text-gray-400 hover:text-red-500 transition-colors">
-                  <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="3 6 5 6 21 6"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-                  </svg>
-                </button>
-                <!-- More -->
-                <button title="More" class="text-gray-400 hover:text-gray-600 transition-colors">
-                  <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
-                  </svg>
-                </button>
+
               </div>
             </td>
           </tr>
@@ -147,66 +205,304 @@
     </div>
 
     <!-- Pagination Footer -->
-    <div class="px-[20px] py-[12px] border-t border-gray-100 flex items-center justify-between flex-wrap gap-3">
+    <div class="px-[24px] py-[16px] border-t border-gray-100 flex items-center justify-between flex-wrap gap-4 bg-white">
 
-      <!-- Rows per page -->
-      <div class="flex items-center gap-[8px] text-[12px] text-gray-500">
+      <!-- Left: Rows per page -->
+      <div class="flex items-center gap-[8px] text-[12px] text-gray-500 font-medium">
         <span>Rows per page</span>
         <div class="relative">
           <select
             [(ngModel)]="rowsPerPage"
             (ngModelChange)="onRowsPerPageChange()"
-            class="appearance-none border border-gray-200 rounded-[4px] px-[8px] pr-[20px] py-[3px] text-[12px] text-gray-700 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400">
+            class="appearance-none border border-gray-200 rounded-[6px] px-[12px] pr-[28px] py-[5px] text-[12px] text-gray-700 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all font-semibold">
             <option [value]="5">5</option>
             <option [value]="10">10</option>
             <option [value]="20">20</option>
             <option [value]="50">50</option>
           </select>
-          <svg class="pointer-events-none absolute right-[4px] top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500"
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg class="pointer-events-none absolute right-[8px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         </div>
       </div>
 
-      <!-- Range + page buttons -->
-      <div class="flex items-center gap-[12px]">
-        <span class="text-[12px] text-gray-500">{{ rangeStart }} – {{ rangeEnd }} of {{ totalItems }}</span>
+      <!-- Right: Page info + controls -->
+      <div class="flex items-center gap-[16px]">
+        <!-- Range info -->
+        <span class="text-[12px] text-gray-500 font-medium">
+          {{ rangeStart }} - {{ rangeEnd }} of {{ totalItems }}
+        </span>
 
-        <!-- Prev -->
+        <!-- Prev button -->
         <button
           (click)="prevPage()"
           [disabled]="currentPage === 1"
-          class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-          <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+          class="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1 focus:outline-none">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
           </svg>
         </button>
 
         <!-- Page numbers -->
-        <div class="flex items-center gap-[4px]">
+        <div class="flex items-center gap-[6px]">
           <button
             *ngFor="let p of visiblePages"
             (click)="goToPage(p)"
             [ngClass]="{
-              'bg-blue-600 text-white border-blue-600': p === currentPage,
-              'bg-white text-gray-600 border-gray-200 hover:bg-gray-50': p !== currentPage
+              'w-7 h-7 bg-blue-600 text-white rounded-full font-bold shadow-sm': p === currentPage,
+              'px-2 py-1 text-gray-500 hover:text-blue-600 font-semibold bg-transparent border-0': p !== currentPage
             }"
-            class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border text-[12px] font-medium transition-colors">
+            class="text-[12px] flex items-center justify-center transition-all duration-200 focus:outline-none">
             {{ p }}
           </button>
         </div>
 
-        <!-- Next -->
+        <!-- Next button -->
         <button
           (click)="nextPage()"
           [disabled]="currentPage === totalPages"
-          class="w-[28px] h-[28px] flex items-center justify-center rounded-[4px] border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-          <svg class="w-3.5 h-3.5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/>
+          class="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1 focus:outline-none">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ADD FACULTY POPUP MODAL OVERLAY -->
+  <div
+    *ngIf="showAddModal"
+    (click)="showAddModal = false"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+    <!-- Modal Container -->
+    <div
+      (click)="$event.stopPropagation()"
+      class="bg-white rounded-[12px] border border-gray-200 shadow-xl max-w-[480px] w-full p-[28px] flex flex-col relative">
+
+      <!-- Modal Header -->
+      <div class="mb-[20px]">
+        <h3 class="text-[18px] font-bold text-gray-900">Add New Faculty</h3>
+        <p class="text-[12px] text-gray-400 mt-[4px]">Fill in the details below to add a new faculty member.</p>
+      </div>
+
+      <!-- Emp ID (Read-only generated value) -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-400 mb-[6px]">Employee ID (Auto-Generated)</label>
+        <input
+          type="text"
+          [(ngModel)]="formEmpId"
+          readonly
+          class="w-full border border-gray-200 bg-gray-50 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-500 font-bold focus:outline-none" />
+      </div>
+
+      <!-- Faculty Name -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Faculty Name</label>
+        <input
+          type="text"
+          [(ngModel)]="formFacultyName"
+          placeholder="Enter faculty name"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" />
+      </div>
+
+      <!-- Department -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Department</label>
+        <select
+          [(ngModel)]="formDepartment"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+          <option *ngFor="let dept of departmentsList" [value]="dept">{{ dept }}</option>
+        </select>
+      </div>
+
+      <!-- Designation -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Designation</label>
+        <select
+          [(ngModel)]="formDesignation"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+          <option value="Professor">Professor</option>
+          <option value="Associate Professor">Associate Professor</option>
+          <option value="Assistant Professor">Assistant Professor</option>
+          <option value="Lecturer">Lecturer</option>
+        </select>
+      </div>
+
+      <!-- Status -->
+      <div class="flex flex-col mb-[24px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Status</label>
+        <select
+          [(ngModel)]="formStatus"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+          <option value="Active">Active</option>
+          <option value="On Leave">On Leave</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-[12px]">
+        <button
+          (click)="showAddModal = false"
+          class="px-[18px] py-[8px] bg-white border border-gray-300 text-gray-700 font-semibold rounded-[20px] text-[13px] hover:bg-gray-50 transition-colors focus:outline-none cursor-pointer">
+          Cancel
+        </button>
+        <button
+          (click)="submitAddFaculty()"
+          class="px-[18px] py-[8px] bg-blue-600 text-white font-semibold rounded-[20px] text-[13px] hover:bg-blue-700 transition-colors focus:outline-none cursor-pointer">
+          Add Faculty
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EDIT FACULTY POPUP MODAL OVERLAY -->
+  <div
+    *ngIf="showEditModal"
+    (click)="showEditModal = false"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+    <!-- Modal Container -->
+    <div
+      (click)="$event.stopPropagation()"
+      class="bg-white rounded-[12px] border border-gray-200 shadow-xl max-w-[480px] w-full p-[28px] flex flex-col relative">
+
+      <!-- Modal Header -->
+      <div class="mb-[20px]">
+        <h3 class="text-[18px] font-bold text-gray-900">Edit Faculty Details</h3>
+        <p class="text-[12px] text-gray-400 mt-[4px]">Update the details for this faculty member.</p>
+      </div>
+
+      <!-- Emp ID (Read-only) -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-400 mb-[6px]">Employee ID</label>
+        <input
+          type="text"
+          [(ngModel)]="formEmpId"
+          readonly
+          class="w-full border border-gray-200 bg-gray-50 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-400 font-bold focus:outline-none" />
+      </div>
+
+      <!-- Faculty Name -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Faculty Name</label>
+        <input
+          type="text"
+          [(ngModel)]="formFacultyName"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" />
+      </div>
+
+      <!-- Department -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Department</label>
+        <select
+          [(ngModel)]="formDepartment"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+          <option *ngFor="let dept of departmentsList" [value]="dept">{{ dept }}</option>
+        </select>
+      </div>
+
+      <!-- Designation -->
+      <div class="flex flex-col mb-[16px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Designation</label>
+        <select
+          [(ngModel)]="formDesignation"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+          <option value="Professor">Professor</option>
+          <option value="Associate Professor">Associate Professor</option>
+          <option value="Assistant Professor">Assistant Professor</option>
+          <option value="Lecturer">Lecturer</option>
+        </select>
+      </div>
+
+      <!-- Status -->
+      <div class="flex flex-col mb-[24px]">
+        <label class="text-[12px] font-semibold text-gray-700 mb-[6px]">Status</label>
+        <select
+          [(ngModel)]="formStatus"
+          class="w-full border border-gray-300 rounded-[6px] px-[12px] py-[8px] text-[13px] text-gray-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+          <option value="Active">Active</option>
+          <option value="On Leave">On Leave</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-[12px]">
+        <button
+          (click)="showEditModal = false"
+          class="px-[18px] py-[8px] bg-white border border-gray-300 text-gray-700 font-semibold rounded-[20px] text-[13px] hover:bg-gray-50 transition-colors focus:outline-none cursor-pointer">
+          Cancel
+        </button>
+        <button
+          (click)="submitEditFaculty()"
+          class="px-[18px] py-[8px] bg-blue-600 text-white font-semibold rounded-[20px] text-[13px] hover:bg-blue-700 transition-colors focus:outline-none cursor-pointer">
+          Save Changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW FACULTY DETAILS MODAL OVERLAY -->
+  <div
+    *ngIf="showViewModal"
+    (click)="showViewModal = false"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+    <!-- Modal Container -->
+    <div
+      (click)="$event.stopPropagation()"
+      class="bg-white rounded-[12px] border border-gray-200 shadow-xl max-w-[440px] w-full p-[28px] flex flex-col relative">
+
+      <!-- Modal Header -->
+      <div class="mb-[20px]">
+        <h3 class="text-[18px] font-bold text-gray-900">Faculty Details</h3>
+        <p class="text-[12px] text-gray-400 mt-[4px]">Read-only profile view of the faculty member.</p>
+      </div>
+
+      <!-- Info Fields -->
+      <div class="bg-[#f9fafb] border border-gray-100 rounded-[8px] p-[16px] mb-[24px] flex flex-col gap-[12px] text-[13px]">
+        <div class="flex justify-between border-b border-gray-100/50 pb-2">
+          <span class="text-gray-400">Employee ID</span>
+          <span class="text-gray-700 font-bold">{{ selectedFaculty?.empId }}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-100/50 pb-2">
+          <span class="text-gray-400">Full Name</span>
+          <span class="text-gray-700 font-semibold">{{ selectedFaculty?.facultyName }}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-100/50 pb-2">
+          <span class="text-gray-400">Department</span>
+          <span class="text-gray-700 font-semibold">{{ selectedFaculty?.department }}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-100/50 pb-2">
+          <span class="text-gray-400">Designation</span>
+          <span class="text-gray-700 font-semibold">{{ selectedFaculty?.designation }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Status</span>
+          <span [ngClass]="{
+            'bg-emerald-50 text-emerald-600 border-emerald-100': selectedFaculty?.status === 'Active',
+            'bg-amber-50 text-amber-600 border-amber-100': selectedFaculty?.status === 'On Leave',
+            'bg-rose-50 text-rose-600 border-rose-100': selectedFaculty?.status === 'Inactive'
+          }" class="text-[11px] font-bold px-[10px] py-[3px] rounded-[6px] border tracking-wide inline-block">
+            {{ selectedFaculty?.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <div class="flex items-center justify-end">
+        <button
+          (click)="showViewModal = false"
+          class="px-[18px] py-[8px] bg-blue-600 text-white font-semibold rounded-[20px] text-[13px] hover:bg-blue-700 transition-colors focus:outline-none cursor-pointer w-full text-center">
+          Close View
+        </button>
+      </div>
+
     </div>
   </div>
 

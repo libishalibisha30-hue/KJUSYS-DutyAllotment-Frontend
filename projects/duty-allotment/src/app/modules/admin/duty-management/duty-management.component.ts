@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedToastService } from '@libs/shared-auth';
 
 export interface DutyRecord {
   dutyType: string;
@@ -53,20 +54,22 @@ export interface SwapRequest {
 })
 export class DutyManagementComponent implements OnInit {
 
+  constructor(private toastService: SharedToastService) {}
+
   // ── Sub-tabs ─────────────────────────────────────────────────────────────────
   activeSubTabId = 'create-new-duty';
 
   subTabs = [
     { id: 'create-new-duty', label: 'Create New Duty' },
     { id: 'assign-duty',     label: 'Assign Duty' },
-    { id: 'swap-requests',   label: 'Swap Request' }
+    { id: 'swap-requests',   label: 'Swap Requests' }
   ];
 
   onSubTabSelected(tabId: string): void {
     this.activeSubTabId = tabId;
   }
 
-  // ── Dropdown data ─────────────────────────────────────────────────────────────
+  // ── Dropdown options ─────────────────────────────────────────────────────────────
   dutyTypeOptions = [
     { id: 1, name: 'Exam Duty' },
     { id: 2, name: 'Invigilation' },
@@ -92,15 +95,31 @@ export class DutyManagementComponent implements OnInit {
     { id: 5, name: 'Electronics' }
   ];
 
-  // ── Create New Duty form ──────────────────────────────────────────────────────
+  dateOptions = [
+    { id: 1, name: 'May 25, 2026' },
+    { id: 2, name: 'May 26, 2026' },
+    { id: 3, name: 'May 27, 2026' },
+    { id: 4, name: 'May 28, 2026' },
+    { id: 5, name: 'May 29, 2026' }
+  ];
+
+  timeOptions = [
+    { id: 1, name: '9:00 AM - 11:00 AM' },
+    { id: 2, name: '9:00 AM - 12:00 PM' },
+    { id: 3, name: '10:00 AM - 12:00 PM' },
+    { id: 4, name: '10:00 AM - 1:00 PM' },
+    { id: 5, name: '2:00 PM - 5:00 PM' }
+  ];
+
+  // ── Create New Duty form selections ───────────────────────────────────────────
   selectedDutyType: any[] = [];
   selectedVenue: any[] = [];
   selectedDepartment: any[] = [];
+  selectedDate: any[] = [];
+  selectedTime: any[] = [];
 
   form = {
     eventName: '',
-    date: '',
-    time: '',
     noOfFaculty: null as number | null,
     description: ''
   };
@@ -108,39 +127,37 @@ export class DutyManagementComponent implements OnInit {
   onDutyTypeChange(items: any[]): void   { this.selectedDutyType   = items; }
   onVenueChange(items: any[]): void      { this.selectedVenue      = items; }
   onDepartmentChange(items: any[]): void { this.selectedDepartment = items; }
+  onDateChange(items: any[]): void       { this.selectedDate       = items; }
+  onTimeChange(items: any[]): void       { this.selectedTime       = items; }
 
   onClear(): void {
     this.selectedDutyType   = [];
     this.selectedVenue      = [];
     this.selectedDepartment = [];
-    this.form = { eventName: '', date: '', time: '', noOfFaculty: null, description: '' };
+    this.selectedDate       = [];
+    this.selectedTime       = [];
+    this.form = { eventName: '', noOfFaculty: null, description: '' };
   }
 
   onCreate(): void {
     if (
       !this.selectedDutyType.length ||
       !this.form.eventName ||
-      !this.form.date ||
-      !this.form.time ||
+      !this.selectedDate.length ||
+      !this.selectedTime.length ||
       !this.selectedVenue.length ||
       !this.selectedDepartment.length ||
       !this.form.noOfFaculty
     ) {
-      alert('Please fill in all details.');
+      this.toastService.showToast('Please fill in all details.', 'error');
       return;
     }
-
-    const dateObj = new Date(this.form.date);
-    const months  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const formattedDate = isNaN(dateObj.getTime())
-      ? this.form.date
-      : `${months[dateObj.getMonth()]} ${dateObj.getDate()}, ${dateObj.getFullYear()}`;
 
     const newDuty: DutyRecord = {
       dutyType:            this.selectedDutyType[0].name,
       eventName:           this.form.eventName,
-      date:                formattedDate,
-      time:                this.form.time,
+      date:                this.selectedDate[0].name,
+      time:                this.selectedTime[0].name,
       venue:               this.selectedVenue[0].name,
       department:          this.selectedDepartment[0].name,
       noOfFacultyRequired: this.form.noOfFaculty || 1,
@@ -151,7 +168,17 @@ export class DutyManagementComponent implements OnInit {
     this.allDuties      = [newDuty, ...this.allDuties];
     this.filteredDuties = [...this.allDuties];
     this.currentPage    = 1;
+    this.toastService.showToast('New duty event created successfully.', 'success');
     this.onClear();
+  }
+
+  onFileUploaded(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.toastService.showToast(`File "${file.name}" uploaded successfully.`, 'success');
+      input.value = '';
+    }
   }
 
   // ── Duty Table (Create New Duty) ──────────────────────────────────────────────
@@ -213,7 +240,7 @@ export class DutyManagementComponent implements OnInit {
   onAssignDutyTypeChange(items: any[]): void {
     this.selectedAssignDutyType = items;
     if (items.length > 0) {
-      this.selectedDutyDetails = this.allDuties.find(d => d.dutyType === items[0].name) || null;
+      this.selectedDutyDetails = this.allDuties.find(d => d.dutyType === items[0].name && d.status === 'Pending') || null;
     } else {
       this.selectedDutyDetails = null;
     }
@@ -221,14 +248,32 @@ export class DutyManagementComponent implements OnInit {
 
   onAssignDuty(): void {
     if (!this.selectedAssignDutyType.length || !this.selectedDutyDetails) {
-      alert('Please select a Duty Type first.');
+      this.toastService.showToast('Please select a Duty Type first.', 'error');
       return;
     }
     if (this.selectedFaculty.length === 0) {
-      alert('Please select at least one faculty member to assign.');
+      this.toastService.showToast('Please select at least one faculty member to assign.', 'error');
       return;
     }
-    alert(`Duty successfully assigned to: ${this.selectedFaculty.map(f => f.facultyName).join(', ')}`);
+
+    // Find the duty and update status to 'Assigned'
+    const dutyIndex = this.allDuties.findIndex(
+      d => d.dutyType === this.selectedDutyDetails?.dutyType &&
+           d.eventName === this.selectedDutyDetails?.eventName &&
+           d.date === this.selectedDutyDetails?.date &&
+           d.status === 'Pending'
+    );
+    if (dutyIndex > -1) {
+      this.allDuties[dutyIndex].status = 'Assigned';
+    }
+    if (this.selectedDutyDetails) {
+      this.selectedDutyDetails.status = 'Assigned';
+    }
+
+    this.filteredDuties = [...this.allDuties];
+
+    const facultyNames = this.selectedFaculty.map(f => f.facultyName).join(', ');
+    this.toastService.showToast(`Duty successfully assigned to: ${facultyNames}`, 'success');
     this.clearSelectedFaculty();
   }
 
@@ -307,42 +352,42 @@ export class DutyManagementComponent implements OnInit {
   swapRequests: SwapRequest[] = [
     {
       id: 'SR001',
-      facultyName:  'Bonnie Green',
+      facultyName:  'Riya Nair',
       avatar:       'assets/images/Avatar.jpg',
       imageError:   false,
-      dutyType:     'Exam Duty',
-      date:         '22 May 2026',
-      time:         '9:00 AM -12:00 PM',
-      venue:        'Block A 101',
-      reason:       'I have a meeting',
-      requestedOn:  '18 May 2026',
-      swapWith:     'John',
+      dutyType:     'Lab Supervision',
+      date:         '27 May 2026',
+      time:         '10:00 AM - 12:00 PM',
+      venue:        'Science Lab - B2',
+      reason:       'Medical appointment',
+      requestedOn:  '21 May 2026',
+      swapWith:     'David Paul',
       swapAvatar:   'assets/images/Avatar.jpg',
       swapImageError: false,
       swapDutyType: 'Invigilation',
-      swapDate:     '24 May 2026',
-      swapTime:     '10:00 AM - 1:00 PM',
-      swapVenue:    'Block B 201',
+      swapDate:     '28 May 2026',
+      swapTime:     '9:00 AM - 12:00 PM',
+      swapVenue:    'Block A - 102',
       status:       'Pending'
     },
     {
       id: 'SR002',
-      facultyName:  'Bonnie Green',
+      facultyName:  'Riya Nair',
       avatar:       'assets/images/Avatar.jpg',
       imageError:   false,
-      dutyType:     'Exam Duty',
-      date:         '22 May 2026',
-      time:         '9:00 AM -12:00 PM',
-      venue:        'Block A 101',
-      reason:       'I have a meeting',
-      requestedOn:  '18 May 2026',
-      swapWith:     'John',
+      dutyType:     'Lab Supervision',
+      date:         '27 May 2026',
+      time:         '10:00 AM - 12:00 PM',
+      venue:        'Science Lab - B2',
+      reason:       'Medical appointment',
+      requestedOn:  '21 May 2026',
+      swapWith:     'David Paul',
       swapAvatar:   'assets/images/Avatar.jpg',
       swapImageError: false,
       swapDutyType: 'Invigilation',
-      swapDate:     '24 May 2026',
-      swapTime:     '10:00 AM - 1:00 PM',
-      swapVenue:    'Block B 201',
+      swapDate:     '28 May 2026',
+      swapTime:     '9:00 AM - 12:00 PM',
+      swapVenue:    'Block A - 102',
       status:       'Pending'
     }
   ];
@@ -374,6 +419,13 @@ export class DutyManagementComponent implements OnInit {
   goToSwapPage(p: number): void { this.swapCurrentPage = p; }
   onSwapRowsPerPageChange(): void { this.swapCurrentPage = 1; }
 
-  approveSwap(req: SwapRequest): void { req.status = 'Approved'; }
-  rejectSwap(req: SwapRequest):  void { req.status = 'Rejected'; }
+  approveSwap(req: SwapRequest): void {
+    req.status = 'Approved';
+    this.toastService.showToast(`Swap request for ${req.facultyName} has been approved.`, 'success');
+  }
+
+  rejectSwap(req: SwapRequest):  void {
+    req.status = 'Rejected';
+    this.toastService.showToast(`Swap request for ${req.facultyName} has been rejected.`, 'success');
+  }
 }
