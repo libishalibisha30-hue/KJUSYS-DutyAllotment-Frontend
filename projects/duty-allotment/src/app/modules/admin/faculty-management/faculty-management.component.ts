@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedToastService } from '@libs/shared-auth';
+import { FacultyService } from './faculty.service';
 
 export interface FacultyRecord {
   empId: string;
@@ -17,7 +18,10 @@ export interface FacultyRecord {
 })
 export class FacultyManagementComponent implements OnInit {
 
-  constructor(private toastService: SharedToastService) {}
+  constructor(
+    private toastService: SharedToastService,
+    private facultyService: FacultyService
+  ) {}
 
   searchQuery = '';
 
@@ -45,33 +49,7 @@ export class FacultyManagementComponent implements OnInit {
   // Three-dot action menu row state
   openMenuId: string | null = null;
 
-  allFaculty: FacultyRecord[] = [
-    { empId: 'EMP 011', facultyName: 'Dr. John',  department: 'Computer Science', designation: 'Professor',  status: 'On Leave', selected: false },
-    { empId: 'EMP 015', facultyName: 'Kevin',     department: 'Computer Science', designation: 'Professor',  status: 'On Leave', selected: false },
-    { empId: 'EMP 022', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 023', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 024', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 025', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 026', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 027', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 028', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 029', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 030', facultyName: 'Dr. Alice', department: 'Mathematics',      designation: 'Associate Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 031', facultyName: 'Robert',    department: 'Physics',          designation: 'Assistant Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 032', facultyName: 'Sandra',    department: 'Chemistry',        designation: 'Professor',  status: 'On Leave', selected: false },
-    { empId: 'EMP 033', facultyName: 'James',     department: 'Mathematics',      designation: 'Lecturer',   status: 'Active',   selected: false },
-    { empId: 'EMP 034', facultyName: 'Patricia',  department: 'Physics',          designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 035', facultyName: 'Michael',   department: 'Computer Science', designation: 'Associate Professor', status: 'Inactive', selected: false },
-    { empId: 'EMP 036', facultyName: 'Linda',     department: 'Chemistry',        designation: 'Lecturer',   status: 'Active',   selected: false },
-    { empId: 'EMP 037', facultyName: 'David',     department: 'Mathematics',      designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 038', facultyName: 'Barbara',   department: 'Physics',          designation: 'Assistant Professor', status: 'On Leave', selected: false },
-    { empId: 'EMP 039', facultyName: 'Richard',   department: 'Computer Science', designation: 'Lecturer',   status: 'Active',   selected: false },
-    { empId: 'EMP 040', facultyName: 'Susan',     department: 'Chemistry',        designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 041', facultyName: 'Joseph',    department: 'Mathematics',      designation: 'Associate Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 042', facultyName: 'Jessica',   department: 'Physics',          designation: 'Lecturer',   status: 'Inactive', selected: false },
-    { empId: 'EMP 043', facultyName: 'Thomas',    department: 'Computer Science', designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 044', facultyName: 'Sarah',     department: 'Chemistry',        designation: 'Assistant Professor', status: 'Active',   selected: false },
-  ];
+  allFaculty: FacultyRecord[] = [];
 
   filteredFaculty: FacultyRecord[] = [];
 
@@ -101,8 +79,63 @@ export class FacultyManagementComponent implements OnInit {
     return this.pagedFaculty.length > 0 && this.pagedFaculty.every(f => f.selected);
   }
 
+  mockFacultyData: FacultyRecord[] = [
+    { empId: 'EMP 011', facultyName: 'Dr. John',  department: 'Computer Science', designation: 'Professor',  status: 'On Leave', selected: false },
+    { empId: 'EMP 015', facultyName: 'Kevin',     department: 'Computer Science', designation: 'Professor',  status: 'On Leave', selected: false },
+    { empId: 'EMP 022', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 023', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 024', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 025', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 026', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 027', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 028', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 029', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 030', facultyName: 'Dr. Alice', department: 'Mathematics',      designation: 'Associate Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 031', facultyName: 'Robert',    department: 'Physics',          designation: 'Assistant Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 032', facultyName: 'Sandra',    department: 'Chemistry',        designation: 'Professor',  status: 'On Leave', selected: false },
+    { empId: 'EMP 033', facultyName: 'James',     department: 'Mathematics',      designation: 'Lecturer',   status: 'Active',   selected: false },
+    { empId: 'EMP 034', facultyName: 'Patricia',  department: 'Physics',          designation: 'Professor',  status: 'Active',   selected: false },
+    { empId: 'EMP 035', facultyName: 'Michael',   department: 'Computer Science', designation: 'Associate Professor', status: 'Inactive', selected: false },
+    { empId: 'EMP 036', facultyName: 'Linda',     department: 'Chemistry',        designation: 'Lecturer',   status: 'Active',   selected: false },
+    { empId: 'EMP 037', facultyName: 'David',     department: 'Mathematics',      designation: 'Professor',  status: 'Active',   selected: false },
+    { empId: 'EMP 038', facultyName: 'Barbara',   department: 'Physics',          designation: 'Assistant Professor', status: 'On Leave', selected: false },
+    { empId: 'EMP 039', facultyName: 'Richard',   department: 'Computer Science', designation: 'Lecturer',   status: 'Active',   selected: false },
+    { empId: 'EMP 040', facultyName: 'Susan',     department: 'Chemistry',        designation: 'Professor',  status: 'Active',   selected: false },
+    { empId: 'EMP 041', facultyName: 'Joseph',    department: 'Mathematics',      designation: 'Associate Professor', status: 'Active',   selected: false },
+    { empId: 'EMP 042', facultyName: 'Jessica',   department: 'Physics',          designation: 'Lecturer',   status: 'Inactive', selected: false },
+    { empId: 'EMP 043', facultyName: 'Thomas',    department: 'Computer Science', designation: 'Professor',  status: 'Active',   selected: false },
+    { empId: 'EMP 044', facultyName: 'Sarah',     department: 'Chemistry',        designation: 'Assistant Professor', status: 'Active',   selected: false },
+  ];
+
   ngOnInit(): void {
-    this.filteredFaculty = [...this.allFaculty];
+    this.allFaculty = [...this.mockFacultyData];
+    this.loadFacultyFromBackend();
+  }
+
+  loadFacultyFromBackend(): void {
+    this.facultyService.getFacultyList().subscribe({
+      next: (data) => {
+        if (data && Array.isArray(data)) {
+          this.allFaculty = data.map(item => ({
+            empId: item.empId || item.id || '',
+            facultyName: item.facultyName || item.name || '',
+            department: item.department || '',
+            designation: item.designation || '',
+            status: item.status || 'Active',
+            selected: false
+          }));
+          this.filteredFaculty = [...this.allFaculty];
+        } else {
+          this.allFaculty = [...this.mockFacultyData];
+          this.filteredFaculty = [...this.allFaculty];
+        }
+      },
+      error: (err) => {
+        console.warn('Failed to load faculty from backend. Using local mock data. Error:', err);
+        this.allFaculty = [...this.mockFacultyData];
+        this.filteredFaculty = [...this.allFaculty];
+      }
+    });
   }
 
   onSearch(): void {
@@ -152,8 +185,7 @@ export class FacultyManagementComponent implements OnInit {
 
   // ── Add Faculty ────────────────────────────────────────────────────────────
   openAddFaculty(): void {
-    const nextNum = Math.max(...this.allFaculty.map(f => parseInt(f.empId.replace('EMP ', '')) || 0)) + 1;
-    this.formEmpId = `EMP ${nextNum.toString().padStart(3, '0')}`;
+    this.formEmpId = '';
     this.formFacultyName = '';
     this.formDepartment = 'Computer Science';
     this.formDesignation = 'Professor';
@@ -181,10 +213,20 @@ export class FacultyManagementComponent implements OnInit {
       selected: false
     };
 
-    this.allFaculty.unshift(newRecord);
-    this.onSearch();
+    this.facultyService.addFaculty(newRecord).subscribe({
+      next: (res) => {
+        this.toastService.showToast(`Faculty ${newRecord.facultyName} added on backend successfully!`, 'success');
+        this.loadFacultyFromBackend();
+      },
+      error: (err) => {
+        console.warn('Failed to add faculty to backend. Adding locally (offline). Error:', err);
+        this.allFaculty.unshift(newRecord);
+        this.onSearch();
+        this.toastService.showToast(`Faculty ${newRecord.facultyName} added locally (offline mode).`, 'info');
+      }
+    });
+
     this.showAddModal = false;
-    this.toastService.showToast(`Faculty ${newRecord.facultyName} added successfully!`, 'success');
   }
 
   // ── View Faculty ───────────────────────────────────────────────────────────
@@ -214,13 +256,27 @@ export class FacultyManagementComponent implements OnInit {
 
     const idx = this.allFaculty.findIndex(f => f.empId === this.formEmpId);
     if (idx > -1) {
+      const updatedStatus = this.formStatus;
+
+      // Update locally first
       this.allFaculty[idx].facultyName = this.formFacultyName.trim();
       this.allFaculty[idx].department = this.formDepartment.trim();
       this.allFaculty[idx].designation = this.formDesignation.trim();
-      this.allFaculty[idx].status = this.formStatus;
-      this.onSearch();
+      this.allFaculty[idx].status = updatedStatus;
+
+      this.facultyService.updateFacultyStatus(this.formEmpId, updatedStatus).subscribe({
+        next: (res) => {
+          this.toastService.showToast(`Faculty status updated on backend.`, 'success');
+          this.loadFacultyFromBackend();
+        },
+        error: (err) => {
+          console.warn('Failed to update status on backend. Local state preserved. Error:', err);
+          this.onSearch();
+          this.toastService.showToast(`Faculty details updated locally (offline mode).`, 'info');
+        }
+      });
+
       this.showEditModal = false;
-      this.toastService.showToast(`Faculty details updated successfully!`, 'success');
     }
   }
 

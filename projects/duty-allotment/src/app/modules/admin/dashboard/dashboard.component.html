@@ -4,8 +4,10 @@
   <div class="flex flex-wrap items-center gap-[24px] w-full max-w-[1200px]">
 
     <!-- Total Faculty Card -->
-    <div class="flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-gradient-to-r from-[#e3f2fd] to-white border border-gray-100 rounded-[16px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div class="text-gray-400 flex-shrink-0">
+    <div class="relative overflow-hidden flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-white border border-slate-100 rounded-[12px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#bae6fd] to-[#93c5fd] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <div class="text-gray-400 flex-shrink-0 relative z-10">
         <svg class="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
@@ -13,15 +15,17 @@
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
       </div>
-      <div class="flex flex-col gap-[8px] mt-auto">
+      <div class="flex flex-col gap-[8px] mt-auto relative z-10">
         <span class="text-[12px] font-semibold text-gray-400">Total Faculty</span>
         <span class="text-[36px] font-bold text-gray-900 leading-none">{{ totalFaculty }}</span>
       </div>
     </div>
 
     <!-- Today's Duty Card -->
-    <div class="flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-gradient-to-r from-[#f3e8ff] to-white border border-gray-100 rounded-[16px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div class="text-gray-400 flex-shrink-0">
+    <div class="relative overflow-hidden flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-white border border-slate-100 rounded-[12px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#e9d5ff] to-[#c084fc] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <div class="text-gray-400 flex-shrink-0 relative z-10">
         <svg class="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
@@ -29,36 +33,40 @@
           <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
       </div>
-      <div class="flex flex-col gap-[8px] mt-auto">
+      <div class="flex flex-col gap-[8px] mt-auto relative z-10">
         <span class="text-[12px] font-semibold text-gray-400">Today's Duty</span>
         <span class="text-[36px] font-bold text-gray-900 leading-none">{{ todayDuty }}</span>
       </div>
     </div>
 
     <!-- Pending Duties Card -->
-    <div class="flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-gradient-to-r from-[#ffe4e6] to-white border border-gray-100 rounded-[16px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div class="text-gray-400 flex-shrink-0">
+    <div class="relative overflow-hidden flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-white border border-slate-100 rounded-[12px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#fecaca] to-[#fca5a5] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <div class="text-gray-400 flex-shrink-0 relative z-10">
         <svg class="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10" />
           <polyline points="12 6 12 12 16 14" />
         </svg>
       </div>
-      <div class="flex flex-col gap-[8px] mt-auto">
+      <div class="flex flex-col gap-[8px] mt-auto relative z-10">
         <span class="text-[12px] font-semibold text-gray-400">Pending Duties</span>
         <span class="text-[36px] font-bold text-gray-900 leading-none">{{ pendingDuties }}</span>
       </div>
     </div>
 
     <!-- Swap Request Card -->
-    <div class="flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-gradient-to-r from-[#fef9c3] to-white border border-gray-100 rounded-[16px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div class="text-gray-400 flex-shrink-0">
+    <div class="relative overflow-hidden flex-1 min-w-[220px] max-w-[285px] h-[135px] bg-white border border-slate-100 rounded-[12px] p-[20px] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
+      <!-- Gradient Blob -->
+      <div class="absolute right-[-30px] top-[10px] bottom-[10px] w-[150px] rounded-full bg-gradient-to-b from-[#fef08a] to-[#fde047] filter blur-[32px] opacity-75 pointer-events-none"></div>
+      <div class="text-gray-400 flex-shrink-0 relative z-10">
         <svg class="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M23 4v6h-6" />
           <path d="M1 20v-6h6" />
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
         </svg>
       </div>
-      <div class="flex flex-col gap-[8px] mt-auto">
+      <div class="flex flex-col gap-[8px] mt-auto relative z-10">
         <span class="text-[12px] font-semibold text-gray-400">Swap Request</span>
         <span class="text-[36px] font-bold text-gray-900 leading-none">{{ swapRequests }}</span>
       </div>

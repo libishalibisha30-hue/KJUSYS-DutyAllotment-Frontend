@@ -22,14 +22,14 @@ export const environment = {
 
 
 
-    baseUrl: 'http://localhost:8080/kjusys-api',
+    baseUrl: 'http://10.245.133.24:8080/kjusys-api',
 
 
 
-   portalLambdaBaseUrl: 'https://2fezfat6k2.execute-api.ap-south-1.amazonaws.com/development',
+    portalLambdaBaseUrl: 'https://2fezfat6k2.execute-api.ap-south-1.amazonaws.com/development',
 
-    project: 'shell', 
-    baseRoute: 'kjusys', 
+    project: 'shell',
+    baseRoute: 'kjusys',
     local: false,
 };
 
