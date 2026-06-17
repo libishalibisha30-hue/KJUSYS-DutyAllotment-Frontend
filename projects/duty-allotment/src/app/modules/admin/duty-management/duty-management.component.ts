@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SharedToastService } from '@libs/shared-auth';
+import { DutyService } from './duty.service';
 
 export interface DutyRecord {
+  id?: string;
+  _id?: string;
   dutyType: string;
   eventName: string;
   date: string;
@@ -11,6 +14,7 @@ export interface DutyRecord {
   noOfFacultyRequired: number;
   status: 'Pending' | 'Assigned' | 'Cancelled';
   selected: boolean;
+  description?: string;
 }
 
 export interface FacultyRecord {
@@ -53,8 +57,13 @@ export interface SwapRequest {
   styleUrls: ['./duty-management.component.css']
 })
 export class DutyManagementComponent implements OnInit {
+  lastCreatedEventName: string | null = null;
 
-  constructor(private toastService: SharedToastService) {}
+  constructor(
+    private toastService: SharedToastService,
+    private dutyService: DutyService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   // ── Sub-tabs ─────────────────────────────────────────────────────────────────
   activeSubTabId = 'create-new-duty';
@@ -162,14 +171,24 @@ export class DutyManagementComponent implements OnInit {
       department:          this.selectedDepartment[0].name,
       noOfFacultyRequired: this.form.noOfFaculty || 1,
       status:              'Pending',
-      selected:            false
+      selected:            false,
+      description:         this.form.description || ''
     };
 
-    this.allDuties      = [newDuty, ...this.allDuties];
-    this.filteredDuties = [...this.allDuties];
-    this.currentPage    = 1;
-    this.toastService.showToast('New duty event created successfully.', 'success');
-    this.onClear();
+    this.lastCreatedEventName = newDuty.eventName;
+    this.dutyService.addDuty(newDuty).subscribe({
+      next: (res) => {
+        this.toastService.showToast('New duty event created successfully.', 'success');
+        this.currentPage = 1; // Reset to page 1 to show the new record at the top
+        this.loadDutiesFromBackend();
+        this.onClear();
+      },
+      error: (err) => {
+        console.warn('Failed to add duty to backend:', err);
+        this.toastService.showToast('Failed to create new duty on backend.', 'error');
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   onFileUploaded(event: Event): void {
@@ -182,28 +201,7 @@ export class DutyManagementComponent implements OnInit {
   }
 
   // ── Duty Table (Create New Duty) ──────────────────────────────────────────────
-  allDuties: DutyRecord[] = Array.from({ length: 25 }, (_, i) => {
-    const types = ['Exam Duty', 'Invigilation', 'Practical Duty', 'Hall Duty'];
-    const events = ['End Sem Exam', 'Internal Assessment', 'Lab Exam', 'Semester Exam'];
-    const dates = ['May 25, 2026', 'May 26, 2026', 'May 27, 2026', 'May 28, 2026'];
-    const times = ['9:00 AM - 11:00 AM', '10:00 AM - 12:00 PM', '9:00 AM - 12:00 PM', '2:00 PM - 5:00 PM'];
-    const venues = ['Block A - 101', 'Block A - 102', 'Lab A - 01', 'Block B - 201'];
-    const depts = ['Computer Science', 'Mathematics', 'Physics', 'Chemistry'];
-    const reqs = [3, 2, 4, 3];
-    
-    const idx = i % 4;
-    return {
-      dutyType:            types[idx],
-      eventName:           events[idx],
-      date:                dates[idx],
-      time:                times[idx],
-      venue:               venues[idx],
-      department:          depts[idx],
-      noOfFacultyRequired: reqs[idx],
-      status:              'Pending' as const,
-      selected:            false
-    };
-  });
+  allDuties: DutyRecord[] = [];
 
   filteredDuties: DutyRecord[] = [];
 
@@ -230,8 +228,143 @@ export class DutyManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filteredDuties  = [...this.allDuties];
     this.filteredFaculty = [...this.allFaculty];
+    this.dateOptions = this.generateDateOptions();
+    this.loadDutiesFromBackend();
+  }
+
+  generateDateOptions(): any[] {
+    const options = [];
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const today = new Date();
+    for (let i = 0; i < 30; i++) {
+      const futureDate = new Date(today);
+      futureDate.setDate(today.getDate() + i);
+      const day = futureDate.getDate();
+      const month = months[futureDate.getMonth()];
+      const year = futureDate.getFullYear();
+      const formatted = `${month} ${day}, ${year}`;
+      options.push({
+        id: i + 1,
+        name: formatted
+      });
+    }
+    return options;
+  }
+
+  populateDropdownsFromBackend(): void {
+    if (this.allDuties.length === 0) return;
+
+    // 1. Duty Types
+    const uniqueTypes = Array.from(new Set(this.allDuties.map(d => d.dutyType).filter(Boolean)));
+    if (uniqueTypes.length > 0) {
+      this.dutyTypeOptions = uniqueTypes.map((type, index) => ({
+        id: index + 1,
+        name: type
+      }));
+    }
+
+    // 2. Venues
+    const uniqueVenues = Array.from(new Set(this.allDuties.map(d => d.venue).filter(Boolean)));
+    if (uniqueVenues.length > 0) {
+      this.venueOptions = uniqueVenues.map((venue, index) => ({
+        id: index + 1,
+        name: venue
+      }));
+    }
+
+    // 3. Departments
+    const uniqueDepts = Array.from(new Set(this.allDuties.map(d => d.department).filter(Boolean)));
+    if (uniqueDepts.length > 0) {
+      this.departmentOptions = uniqueDepts.map((dept, index) => ({
+        id: index + 1,
+        name: dept
+      }));
+    }
+
+    // 4. Times
+    const uniqueTimes = Array.from(new Set(this.allDuties.map(d => d.time).filter(Boolean)));
+    if (uniqueTimes.length > 0) {
+      this.timeOptions = uniqueTimes.map((time, index) => ({
+        id: index + 1,
+        name: time
+      }));
+    }
+  }
+
+  loadDutiesFromBackend(): void {
+    this.dutyService.getDuties().subscribe({
+      next: (response) => {
+        const dutiesList = response?.responseData?.data?.duties || 
+                           response?.responseData?.data?.duty || 
+                           (Array.isArray(response?.responseData?.data) ? response.responseData.data : null) ||
+                           (Array.isArray(response) ? response : null);
+        
+        if (dutiesList && Array.isArray(dutiesList)) {
+          const mapped = dutiesList
+            .map(item => ({
+              id: item.id || item._id || '',
+              _id: item._id || item.id || '',
+              dutyType: item.dutyType || '',
+              eventName: item.eventName || '',
+              date: item.date || '',
+              time: item.timeSlot || item.time || '',
+              venue: item.venue || '',
+              department: item.department || '',
+              noOfFacultyRequired: item.noOfFacultyRequired || item.noOfFaculty || 1,
+              status: this.mapDutyStatus(item.status),
+              selected: false,
+              description: item.description || ''
+            }))
+            .filter(item => item.time && item.time.trim() !== '');
+
+          // 1. Sort by id / _id descending if available (newest creations first)
+          const hasIds = mapped.some(item => item.id || item._id);
+          if (hasIds) {
+            mapped.sort((a, b) => {
+              const valA = String(a.id || a._id || '');
+              const valB = String(b.id || b._id || '');
+              return valB.localeCompare(valA);
+            });
+          } else {
+            mapped.reverse();
+          }
+
+          // 2. Prepend the newly created duty to the top so it is immediately visible
+          if (this.lastCreatedEventName) {
+            const idx = mapped.findIndex(d => d.eventName === this.lastCreatedEventName);
+            if (idx > -1) {
+              const [createdRecord] = mapped.splice(idx, 1);
+              mapped.unshift(createdRecord);
+            }
+          }
+
+          this.allDuties = mapped;
+          this.populateDropdownsFromBackend();
+        } else {
+          this.allDuties = [];
+        }
+        this.filteredDuties = [...this.allDuties];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.warn('Failed to load duties from backend:', err);
+        this.allDuties = [];
+        this.filteredDuties = [...this.allDuties];
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  private mapDutyStatus(status: string): 'Pending' | 'Assigned' | 'Cancelled' {
+    if (!status) return 'Pending';
+    const s = status.toLowerCase().trim();
+    if (s === 'assigned') return 'Assigned';
+    if (s === 'cancelled' || s === 'inactive') return 'Cancelled';
+    return 'Pending';
   }
 
   onRowsPerPageChange(): void { this.currentPage = 1; }

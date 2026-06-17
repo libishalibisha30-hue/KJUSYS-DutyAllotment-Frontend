@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SharedToastService } from '@libs/shared-auth';
 import { FacultyService } from './faculty.service';
 
@@ -20,8 +20,9 @@ export class FacultyManagementComponent implements OnInit {
 
   constructor(
     private toastService: SharedToastService,
-    private facultyService: FacultyService
-  ) {}
+    private facultyService: FacultyService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   searchQuery = '';
 
@@ -60,7 +61,7 @@ export class FacultyManagementComponent implements OnInit {
   get totalItems(): number { return this.filteredFaculty.length; }
   get totalPages(): number { return Math.max(1, Math.ceil(this.totalItems / this.rowsPerPage)); }
   get rangeStart(): number { return this.totalItems === 0 ? 0 : (this.currentPage - 1) * this.rowsPerPage + 1; }
-  get rangeEnd(): number   { return Math.min(this.currentPage * this.rowsPerPage, this.totalItems); }
+  get rangeEnd(): number { return Math.min(this.currentPage * this.rowsPerPage, this.totalItems); }
 
   get pagedFaculty(): FacultyRecord[] {
     const start = (this.currentPage - 1) * this.rowsPerPage;
@@ -70,7 +71,7 @@ export class FacultyManagementComponent implements OnInit {
   get visiblePages(): number[] {
     const max = 5;
     let start = Math.max(1, this.currentPage - Math.floor(max / 2));
-    let end   = Math.min(this.totalPages, start + max - 1);
+    let end = Math.min(this.totalPages, start + max - 1);
     start = Math.max(1, end - max + 1);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
@@ -79,33 +80,7 @@ export class FacultyManagementComponent implements OnInit {
     return this.pagedFaculty.length > 0 && this.pagedFaculty.every(f => f.selected);
   }
 
-  mockFacultyData: FacultyRecord[] = [
-    { empId: 'EMP 011', facultyName: 'Dr. John',  department: 'Computer Science', designation: 'Professor',  status: 'On Leave', selected: false },
-    { empId: 'EMP 015', facultyName: 'Kevin',     department: 'Computer Science', designation: 'Professor',  status: 'On Leave', selected: false },
-    { empId: 'EMP 022', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 023', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 024', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 025', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 026', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 027', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 028', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 029', facultyName: 'Mary',      department: 'Computer Science', designation: 'Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 030', facultyName: 'Dr. Alice', department: 'Mathematics',      designation: 'Associate Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 031', facultyName: 'Robert',    department: 'Physics',          designation: 'Assistant Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 032', facultyName: 'Sandra',    department: 'Chemistry',        designation: 'Professor',  status: 'On Leave', selected: false },
-    { empId: 'EMP 033', facultyName: 'James',     department: 'Mathematics',      designation: 'Lecturer',   status: 'Active',   selected: false },
-    { empId: 'EMP 034', facultyName: 'Patricia',  department: 'Physics',          designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 035', facultyName: 'Michael',   department: 'Computer Science', designation: 'Associate Professor', status: 'Inactive', selected: false },
-    { empId: 'EMP 036', facultyName: 'Linda',     department: 'Chemistry',        designation: 'Lecturer',   status: 'Active',   selected: false },
-    { empId: 'EMP 037', facultyName: 'David',     department: 'Mathematics',      designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 038', facultyName: 'Barbara',   department: 'Physics',          designation: 'Assistant Professor', status: 'On Leave', selected: false },
-    { empId: 'EMP 039', facultyName: 'Richard',   department: 'Computer Science', designation: 'Lecturer',   status: 'Active',   selected: false },
-    { empId: 'EMP 040', facultyName: 'Susan',     department: 'Chemistry',        designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 041', facultyName: 'Joseph',    department: 'Mathematics',      designation: 'Associate Professor', status: 'Active',   selected: false },
-    { empId: 'EMP 042', facultyName: 'Jessica',   department: 'Physics',          designation: 'Lecturer',   status: 'Inactive', selected: false },
-    { empId: 'EMP 043', facultyName: 'Thomas',    department: 'Computer Science', designation: 'Professor',  status: 'Active',   selected: false },
-    { empId: 'EMP 044', facultyName: 'Sarah',     department: 'Chemistry',        designation: 'Assistant Professor', status: 'Active',   selected: false },
-  ];
+  mockFacultyData: FacultyRecord[] = [];
 
   ngOnInit(): void {
     this.allFaculty = [...this.mockFacultyData];
@@ -114,14 +89,27 @@ export class FacultyManagementComponent implements OnInit {
 
   loadFacultyFromBackend(): void {
     this.facultyService.getFacultyList().subscribe({
-      next: (data) => {
-        if (data && Array.isArray(data)) {
-          this.allFaculty = data.map(item => ({
-            empId: item.empId || item.id || '',
-            facultyName: item.facultyName || item.name || '',
+      next: (response) => {
+        // Handle response wrapper { statusCode, type, responseData: { data: { faculty: [...] } } }
+        const facultyList = response?.responseData?.data?.faculty;
+        if (facultyList && Array.isArray(facultyList)) {
+          this.allFaculty = facultyList.map(item => ({
+            empId: item.employeeId || item.empId || item.id || '',
+            facultyName: item.name || item.facultyName || '',
             department: item.department || '',
             designation: item.designation || '',
-            status: item.status || 'Active',
+            status: this.mapStatus(item.status),
+            selected: false
+          }));
+          this.filteredFaculty = [...this.allFaculty];
+        } else if (response && Array.isArray(response)) {
+          // Fallback if response is directly an array
+          this.allFaculty = response.map(item => ({
+            empId: item.employeeId || item.empId || item.id || '',
+            facultyName: item.name || item.facultyName || '',
+            department: item.department || '',
+            designation: item.designation || '',
+            status: this.mapStatus(item.status),
             selected: false
           }));
           this.filteredFaculty = [...this.allFaculty];
@@ -129,13 +117,27 @@ export class FacultyManagementComponent implements OnInit {
           this.allFaculty = [...this.mockFacultyData];
           this.filteredFaculty = [...this.allFaculty];
         }
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.warn('Failed to load faculty from backend. Using local mock data. Error:', err);
         this.allFaculty = [...this.mockFacultyData];
         this.filteredFaculty = [...this.allFaculty];
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  private mapStatus(status: string): 'Active' | 'On Leave' | 'Inactive' {
+    if (!status) return 'Active';
+    const s = status.toLowerCase().trim();
+    if (s === 'onleave' || s === 'on leave') {
+      return 'On Leave';
+    }
+    if (s === 'unavailable' || s === 'inactive') {
+      return 'Inactive';
+    }
+    return 'Active';
   }
 
   onSearch(): void {
@@ -143,10 +145,10 @@ export class FacultyManagementComponent implements OnInit {
     this.filteredFaculty = this.allFaculty.filter(f => {
       const matchesSearch = q
         ? f.empId.toLowerCase().includes(q) ||
-          f.facultyName.toLowerCase().includes(q) ||
-          f.department.toLowerCase().includes(q) ||
-          f.designation.toLowerCase().includes(q) ||
-          f.status.toLowerCase().includes(q)
+        f.facultyName.toLowerCase().includes(q) ||
+        f.department.toLowerCase().includes(q) ||
+        f.designation.toLowerCase().includes(q) ||
+        f.status.toLowerCase().includes(q)
         : true;
       const matchesDept = this.filterDepartment ? f.department === this.filterDepartment : true;
       const matchesStatus = this.filterStatus ? f.status === this.filterStatus : true;
@@ -217,12 +219,14 @@ export class FacultyManagementComponent implements OnInit {
       next: (res) => {
         this.toastService.showToast(`Faculty ${newRecord.facultyName} added on backend successfully!`, 'success');
         this.loadFacultyFromBackend();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.warn('Failed to add faculty to backend. Adding locally (offline). Error:', err);
         this.allFaculty.unshift(newRecord);
         this.onSearch();
         this.toastService.showToast(`Faculty ${newRecord.facultyName} added locally (offline mode).`, 'info');
+        this.cdr.detectChanges();
       }
     });
 
@@ -268,11 +272,13 @@ export class FacultyManagementComponent implements OnInit {
         next: (res) => {
           this.toastService.showToast(`Faculty status updated on backend.`, 'success');
           this.loadFacultyFromBackend();
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.warn('Failed to update status on backend. Local state preserved. Error:', err);
           this.onSearch();
           this.toastService.showToast(`Faculty details updated locally (offline mode).`, 'info');
+          this.cdr.detectChanges();
         }
       });
 
