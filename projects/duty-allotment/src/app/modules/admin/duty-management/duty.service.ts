@@ -25,6 +25,16 @@ export class DutyService {
     return this.http.get(`${this.apiBaseUrl}/duty-allocation/duties`);
   }
 
+  // 1b. GET /swap-requests - Fetch all swap requests
+  getSwapRequests(): Observable<any> {
+    return this.http.get(`${this.apiBaseUrl}/duty-allocation/swap-requests`);
+  }
+
+  // 1c. POST /swap-requests/add - Add a new swap request
+  addSwapRequest(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiBaseUrl}/duty-allocation/swap-requests/add`, payload, { responseType: 'text' as 'json' });
+  }
+
   // 2. POST /duties/add - Create a new duty
   addDuty(duty: DutyRecord): Observable<any> {
     const payload = {
@@ -36,6 +46,9 @@ export class DutyService {
       department: duty.department,
       noOfFacultyRequired: duty.noOfFacultyRequired,
       noOfFaculty: duty.noOfFacultyRequired,
+      requiredFaculty: duty.noOfFacultyRequired,
+      status: duty.status || 'Pending',
+      dutyStatus: duty.status || 'Pending',
       description: duty.description || ''
     };
     return this.http.post<any>(`${this.apiBaseUrl}/duty-allocation/duties/add`, payload, { responseType: 'text' as 'json' });

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SharedToastService } from '@libs/shared-auth';
 import { DutyService } from './duty.service';
+import { FacultyService } from '../faculty-management/faculty.service';
 
 export interface DutyRecord {
   id?: string;
@@ -62,6 +63,7 @@ export class DutyManagementComponent implements OnInit {
   constructor(
     private toastService: SharedToastService,
     private dutyService: DutyService,
+    private facultyService: FacultyService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -230,7 +232,36 @@ export class DutyManagementComponent implements OnInit {
   ngOnInit(): void {
     this.filteredFaculty = [...this.allFaculty];
     this.dateOptions = this.generateDateOptions();
-    this.loadDutiesFromBackend();
+    
+    // 1. Fetch faculty list
+    this.facultyService.getFacultyList().subscribe({
+      next: (response) => {
+        const facultyList = response?.responseData?.data?.faculty;
+        if (facultyList && Array.isArray(facultyList)) {
+          this.allFaculty = facultyList.map(item => ({
+            empId: item.employeeId || item.empId || item.id || '',
+            facultyName: item.name || item.facultyName || '',
+            date: '',
+            department: item.department || '',
+            designation: item.designation || '',
+            status: this.mapFacultyStatus(item.status),
+            selected: false
+          }));
+          this.filteredFaculty = [...this.allFaculty];
+        }
+        // 2. Fetch duties, then fetch swap requests
+        this.loadDutiesFromBackend(() => {
+          this.loadSwapRequestsFromBackend();
+        });
+      },
+      error: (err) => {
+        console.warn('Failed to load faculty list in duty management:', err);
+        // Fallback to loading duties, then swap requests
+        this.loadDutiesFromBackend(() => {
+          this.loadSwapRequestsFromBackend();
+        });
+      }
+    });
   }
 
   generateDateOptions(): any[] {
@@ -295,7 +326,7 @@ export class DutyManagementComponent implements OnInit {
     }
   }
 
-  loadDutiesFromBackend(): void {
+  loadDutiesFromBackend(cb?: () => void): void {
     this.dutyService.getDuties().subscribe({
       next: (response) => {
         const dutiesList = response?.responseData?.data?.duties || 
@@ -314,8 +345,8 @@ export class DutyManagementComponent implements OnInit {
               time: item.timeSlot || item.time || '',
               venue: item.venue || '',
               department: item.department || '',
-              noOfFacultyRequired: item.noOfFacultyRequired || item.noOfFaculty || 1,
-              status: this.mapDutyStatus(item.status),
+              noOfFacultyRequired: item.requiredFaculty || item.noOfFacultyRequired || item.noOfFaculty || 1,
+              status: this.mapDutyStatus(item.dutyStatus || item.status),
               selected: false,
               description: item.description || ''
             }))
@@ -349,12 +380,14 @@ export class DutyManagementComponent implements OnInit {
         }
         this.filteredDuties = [...this.allDuties];
         this.cdr.detectChanges();
+        if (cb) cb();
       },
       error: (err) => {
         console.warn('Failed to load duties from backend:', err);
         this.allDuties = [];
         this.filteredDuties = [...this.allDuties];
         this.cdr.detectChanges();
+        if (cb) cb();
       }
     });
   }
@@ -365,6 +398,105 @@ export class DutyManagementComponent implements OnInit {
     if (s === 'assigned') return 'Assigned';
     if (s === 'cancelled' || s === 'inactive') return 'Cancelled';
     return 'Pending';
+  }
+
+  loadSwapRequestsFromBackend(): void {
+    this.dutyService.getSwapRequests().subscribe({
+      next: (response) => {
+        const rawList = response?.responseData?.data?.swapRequests || 
+                        response?.responseData?.data?.swapRequest || 
+                        (Array.isArray(response?.responseData?.data) ? response.responseData.data : null) ||
+                        (Array.isArray(response) ? response : null);
+        
+        if (rawList && Array.isArray(rawList)) {
+          this.swapRequests = rawList.map(item => {
+            const reqId = item._id?.$oid || item._id || item.id || '';
+            const reason = item.reason || '';
+            const status = this.mapSwapStatus(item.status);
+            
+            // Format request date
+            let requestedOn = '—';
+            if (item.requestedAt) {
+              const dateVal = item.requestedAt.$date || item.requestedAt;
+              try {
+                const d = new Date(dateVal);
+                if (!isNaN(d.getTime())) {
+                  const day = d.getDate();
+                  const monthName = d.toLocaleString('default', { month: 'short' });
+                  const year = d.getFullYear();
+                  requestedOn = `${day} ${monthName} ${year}`;
+                }
+              } catch (e) {}
+            }
+
+            // Lookups:
+            const reqFacultyId = item.requestingFacultyId?.$oid || item.requestingFacultyId || item.requesterFacultyId || '';
+            const targetFacultyId = item.requestedWithFacultyId?.$oid || item.requestedWithFacultyId || item.targetFacultyId || '';
+            const assignmentId = item.assignmentId?.$oid || item.assignmentId || '';
+
+            // Find requester faculty
+            const requester = this.allFaculty.find(f => f.empId === reqFacultyId);
+            const facultyName = requester ? requester.facultyName : (reqFacultyId || 'Unknown Requester');
+
+            // Find target faculty
+            const target = this.allFaculty.find(f => f.empId === targetFacultyId);
+            const swapWith = target ? target.facultyName : (targetFacultyId || 'Unknown Target');
+
+            // Find assignment/duty
+            const duty = this.allDuties.find(d => d.id === assignmentId || d._id === assignmentId);
+            const dutyType = duty ? duty.dutyType : 'Duty';
+            const date = duty ? duty.date : '—';
+            const time = duty ? duty.time : '—';
+            const venue = duty ? duty.venue : '—';
+
+            return {
+              id: reqId,
+              facultyName,
+              avatar: 'assets/images/Avatar.jpg',
+              imageError: false,
+              dutyType,
+              date,
+              time,
+              venue,
+              reason,
+              requestedOn,
+              swapWith,
+              swapAvatar: 'assets/images/Avatar.jpg',
+              swapImageError: false,
+              swapDutyType: 'Duty',
+              swapDate: date,
+              swapTime: time,
+              swapVenue: venue,
+              status
+            };
+          });
+        } else {
+          this.swapRequests = [];
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.warn('Failed to load swap requests from backend:', err);
+        this.swapRequests = [];
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  private mapSwapStatus(status: string): 'Pending' | 'Approved' | 'Rejected' {
+    if (!status) return 'Pending';
+    const s = status.toLowerCase().trim();
+    if (s === 'approved' || s === 'accepted') return 'Approved';
+    if (s === 'rejected' || s === 'cancelled') return 'Rejected';
+    return 'Pending';
+  }
+
+  private mapFacultyStatus(status: string): 'Active' | 'On Leave' | 'Inactive' {
+    if (!status) return 'Active';
+    const s = status.toLowerCase().trim();
+    if (s === 'onleave' || s === 'on leave') return 'On Leave';
+    if (s === 'unavailable' || s === 'inactive') return 'Inactive';
+    return 'Active';
   }
 
   onRowsPerPageChange(): void { this.currentPage = 1; }
