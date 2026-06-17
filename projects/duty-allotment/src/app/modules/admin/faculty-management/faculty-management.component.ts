@@ -261,21 +261,28 @@ export class FacultyManagementComponent implements OnInit {
     const idx = this.allFaculty.findIndex(f => f.empId === this.formEmpId);
     if (idx > -1) {
       const updatedStatus = this.formStatus;
+      const updatedRecord: FacultyRecord = {
+        empId: this.formEmpId,
+        facultyName: this.formFacultyName.trim(),
+        department: this.formDepartment.trim(),
+        designation: this.formDesignation.trim(),
+        status: updatedStatus,
+        selected: false
+      };
 
-      // Update locally first
-      this.allFaculty[idx].facultyName = this.formFacultyName.trim();
-      this.allFaculty[idx].department = this.formDepartment.trim();
-      this.allFaculty[idx].designation = this.formDesignation.trim();
-      this.allFaculty[idx].status = updatedStatus;
-
-      this.facultyService.updateFacultyStatus(this.formEmpId, updatedStatus).subscribe({
+      this.facultyService.editFaculty(this.formEmpId, updatedRecord).subscribe({
         next: (res) => {
-          this.toastService.showToast(`Faculty status updated on backend.`, 'success');
+          this.toastService.showToast(`Faculty details updated on backend successfully!`, 'success');
           this.loadFacultyFromBackend();
           this.cdr.detectChanges();
         },
         error: (err) => {
-          console.warn('Failed to update status on backend. Local state preserved. Error:', err);
+          console.warn('Failed to update faculty details on backend. Local state preserved. Error:', err);
+          // Fallback to local update
+          this.allFaculty[idx].facultyName = this.formFacultyName.trim();
+          this.allFaculty[idx].department = this.formDepartment.trim();
+          this.allFaculty[idx].designation = this.formDesignation.trim();
+          this.allFaculty[idx].status = updatedStatus;
           this.onSearch();
           this.toastService.showToast(`Faculty details updated locally (offline mode).`, 'info');
           this.cdr.detectChanges();
@@ -289,10 +296,23 @@ export class FacultyManagementComponent implements OnInit {
   // ── Delete Faculty ─────────────────────────────────────────────────────────
   deleteFaculty(faculty: FacultyRecord): void {
     if (confirm(`Are you sure you want to delete ${faculty.facultyName}?`)) {
-      this.allFaculty = this.allFaculty.filter(f => f.empId !== faculty.empId);
-      this.onSearch();
-      this.closeAllMenus();
-      this.toastService.showToast(`Faculty ${faculty.facultyName} deleted successfully.`, 'success');
+      this.facultyService.deleteFaculty(faculty.empId).subscribe({
+        next: (res) => {
+          this.allFaculty = this.allFaculty.filter(f => f.empId !== faculty.empId);
+          this.onSearch();
+          this.closeAllMenus();
+          this.toastService.showToast(`Faculty ${faculty.facultyName} deleted successfully.`, 'success');
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.warn('Failed to delete faculty from backend. Removing locally (offline). Error:', err);
+          this.allFaculty = this.allFaculty.filter(f => f.empId !== faculty.empId);
+          this.onSearch();
+          this.closeAllMenus();
+          this.toastService.showToast(`Faculty ${faculty.facultyName} deleted locally (offline mode).`, 'info');
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 }

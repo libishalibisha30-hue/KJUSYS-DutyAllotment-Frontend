@@ -38,17 +38,27 @@ export class FacultyService {
 
   // 2. GET /faculty/:id - View details of a single faculty
   getFacultyById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiBaseUrl}/faculty/${id}`);
+    return this.http.get<any>(`${this.apiBaseUrl}/duty-allocation/faculty/${id}`);
   }
 
   // 3. POST /faculty/add - Add a new faculty member
   addFaculty(faculty: FacultyRecord): Observable<any> {
-    return this.http.post<any>(`${this.apiBaseUrl}/faculty/add`, faculty);
+    return this.http.post<any>(`${this.apiBaseUrl}/duty-allocation/faculty/add`, faculty);
   }
 
   // 4. PUT /faculty/update-status/:id - Update faculty status
   updateFacultyStatus(id: string, status: 'Active' | 'On Leave' | 'Inactive'): Observable<any> {
-    return this.http.put(`${this.apiBaseUrl}/faculty/update-status/${id}`, { status });
+    return this.http.put(`${this.apiBaseUrl}/duty-allocation/faculty/update-status/${id}`, { status });
+  }
+
+  // 5. DELETE /faculty/:id - Delete a faculty member
+  deleteFaculty(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiBaseUrl}/duty-allocation/faculty/${id}`, { responseType: 'text' as 'json' });
+  }
+
+  // 6. PUT /faculty/edit/:id - Edit an existing faculty member
+  editFaculty(id: string, faculty: FacultyRecord): Observable<any> {
+    return this.http.put<any>(`${this.apiBaseUrl}/duty-allocation/faculty/edit/${id}`, faculty, { responseType: 'text' as 'json' });
   }
 
   private reconnectTimeout: any;
